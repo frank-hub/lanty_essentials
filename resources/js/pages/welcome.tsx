@@ -199,12 +199,13 @@ const MaloryHomepage: React.FC = () => {
       </section>
 
       {/* Flash Sale */}
+
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold text-gray-900 mb-12">Flash sale</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
             {flashSaleProducts.map((product) => (
-              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden group hover:shadow-lg transition-shadow duration-300">
+              <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition">
                 <div className="relative">
                   <img
                     src={product.image}
@@ -382,34 +383,37 @@ const MaloryHomepage: React.FC = () => {
 
       {/* Combo Deals Section */}
       <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Product Image */}
-            <div>
-              <img
-                src="https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=600&h=500&fit=crop"
-                alt="Malory Combo Products"
-                className="w-full h-96 object-cover rounded-lg"
-              />
-            </div>
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 items-center overflow-hidden rounded-lg shadow">
 
-            {/* Content */}
-            <div className="bg-orange-100 p-8 rounded-lg">
-              <h3 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-                Malory Combo Deals: Elevate Your Laundry Experience with Exclusive Bundles
-              </h3>
-              <p className="text-lg text-gray-700 mb-8 text-center leading-relaxed">
-                Discover Malory's Combo Deals— curated bundles of top laundry products for an 8x cleaner, fresher load with long-lasting fragrance every time.
-              </p>
-              <div className="text-center">
-                <button className="bg-gray-600 text-white px-8 py-3 font-small hover:bg-gray-700 transition-colors duration-200">
-                  Shop New
-                </button>
-              </div>
-            </div>
+          {/* Left: Image */}
+          <div className="w-full h-full">
+            <img
+              src="https://www.malory.com.au/cdn/shop/files/5_1_4he1_8.jpg?v=1752462368&width=1070" // place your image in public/images
+              alt="Malory Combo Deal"
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Right: Text */}
+          <div className="bg-[#D9CBB9] p-10 flex flex-col justify-center">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              Malory Combo Deals: Elevate Your Laundry Experience with Exclusive Bundles
+            </h2>
+            <p className="text-gray-800 mb-6">
+              Discover Malory's Combo Deals—curated bundles of top laundry products
+              for an 8x cleaner, fresher load with long-lasting fragrance every time.
+            </p>
+            <a
+              href="" // adjust to your Laravel route
+              className="inline-block bg-gray-800 text-white px-6 py-3 rounded shadow hover:bg-black transition"
+            >
+              Shop New
+            </a>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* Trust Features */}
       <section className="py-16 bg-gray-50">
