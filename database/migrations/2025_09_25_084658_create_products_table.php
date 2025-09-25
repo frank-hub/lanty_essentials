@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('sku');
+            $table->string('sku')->unique();
+            $table->string('name');
+            $table->decimal('price',10,2);
+            $table->string('weight',10,2)->nullable();
+            $table->text('descriptions');
+            $table->string('thumbnail');
+            $table->string('image');
+            $table->unsignedBigInteger('category');
+            $table->integer('stock')->default(0);
+            $table->timestamp('create_date')->useCurrent();
             $table->timestamps();
         });
     }
