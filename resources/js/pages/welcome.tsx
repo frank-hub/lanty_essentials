@@ -10,56 +10,48 @@ interface Product {
   onSale?: boolean;
 }
 
-const MaloryHomepage: React.FC = () => {
+const LantyHomepage: React.FC = () => {
   const flashSaleProducts: Product[] = [
     {
       id: '1',
-      name: 'MALORY Antibacterial Concentrated Underwear Laundry Detergent 300ml',
-      originalPrice: '£9.00 GBP',
-      salePrice: '£4.00 GBP',
+      name: 'Lanty Antibacterial Concentrated Underwear Laundry Detergent 300ml',
+      originalPrice: 'KSh 9,000 ',
+      salePrice: 'KSh 4,000 ',
       image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop',
       onSale: true
     },
     {
       id: '2',
-      name: 'MALORY Laundry Pods Combo',
-      originalPrice: '£26.00 GBP',
-      salePrice: '£16.00 GBP',
+      name: 'Lanty Laundry Pods Combo',
+      originalPrice: 'KSh 26,000 ',
+      salePrice: 'KSh 16,000 ',
       image: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=300&h=300&fit=crop',
       onSale: true
     },
     {
       id: '3',
-      name: 'MALORY 4 in 1 laundry pods 20 Packs',
-      originalPrice: '£7.00 GBP',
-      salePrice: '£4.00 GBP',
+      name: 'Lanty 4 in 1 laundry pods 20 Packs',
+      originalPrice: 'KSh 7,000 ',
+      salePrice: 'KSh 4,000 ',
       image: 'https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=300&h=300&fit=crop',
       onSale: true
     },
     {
       id: '4',
-      name: 'MALORY camellia scented Bulk laundry detergent 2.0',
-      originalPrice: '£9.00 GBP',
-      salePrice: '£6.00 GBP',
+      name: 'Lanty camellia scented Bulk laundry detergent 2.0',
+      originalPrice: 'KSh 9,000 ',
+      salePrice: 'KSh 6,000 ',
       image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&h=300&fit=crop',
       onSale: true
     },
     {
       id: '5',
-      name: 'Malory tableware cleaner & vegetable cleaner',
-      originalPrice: '£9.00 GBP',
-      salePrice: '£3.00 GBP',
+      name: 'Lanty tableware cleaner & vegetable cleaner',
+      originalPrice: 'KSh 9,000 ',
+      salePrice: 'KSh 3,000 ',
       image: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=300&h=300&fit=crop',
       onSale: true
     },
-    {
-      id: '6',
-      name: 'MALORY New 7-Piece Sanitary Napkin Set — All-Day Comfort',
-      originalPrice: '£18.00 GBP',
-      salePrice: '£11.00 GBP',
-      image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=300&h=300&fit=crop',
-      onSale: true
-    }
   ];
 
   const categories = [
@@ -94,37 +86,37 @@ const MaloryHomepage: React.FC = () => {
 
             {/* Navigation */}
             <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-small">
+              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 Sanitary Pads
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-small">
+              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2 border-gray-900">
                 Laundry Detergents
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-small">
+              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 Laundry Pods
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-small">
+              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 Combo
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-small">
+              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 Skin Care
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-small">
+              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 Home Cleaning
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-small">
+              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 FAQS
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-small">
-              Contact Us
-            </a>
-
+              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+                Contact Us
+              </a>
             </nav>
-          </div>
 
-          {/* Secondary Navigation */}
-          <div className="hidden md:flex space-x-8 pb-4">
-
+            {/* Right side */}
+            <div className="flex items-center space-x-4">              
+              <User className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
+              <ShoppingCart className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
+            </div>
           </div>
         </div>
       </header>
@@ -134,7 +126,7 @@ const MaloryHomepage: React.FC = () => {
       {/* Background image */}
       <img
         src="https://www.malory.com.au/cdn/shop/files/3e9b4c31c67413c55ff1042ab9594d2.jpg?v=1753501380&width=2000" // place your hero image in public/images
-        alt="Malory Products"
+        alt="Lanty Products"
         className="absolute inset-0 w-full h-full object-cover"
       />
 
@@ -142,7 +134,7 @@ const MaloryHomepage: React.FC = () => {
       <div className="absolute inset-0 bg-opacity-30" style={{ backgroundColor: 'rgb(0 0 0 / 37%)' }}></div>
 
       {/* Content */}
-      <div className="relative z-10 text-center text-white px-4">
+      <div className="relative z-10 text-center text-white px-4 mt-100">
         <h1 className="text-4xl md:text-6xl font-bold mb-6">
           Browse our latest products
         </h1>
@@ -203,7 +195,7 @@ const MaloryHomepage: React.FC = () => {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold text-gray-900 mb-12">Flash sale</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
             {flashSaleProducts.map((product) => (
               <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition">
                 <div className="relative">
@@ -222,13 +214,13 @@ const MaloryHomepage: React.FC = () => {
                   <h4 className="text-sm font-small text-gray-900 mb-2 line-clamp-2 min-h-[2.5rem]">
                     {product.name}
                   </h4>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center justify-between space-x-2">
                     {product.originalPrice && (
                       <span className="text-sm text-gray-500 line-through">
                         {product.originalPrice}
                       </span>
                     )}
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-sm font-medium text-gray-900">
                       {product.salePrice}
                     </span>
                   </div>
@@ -246,73 +238,39 @@ const MaloryHomepage: React.FC = () => {
 
       {/* About Us Section */}
       <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Image Collage */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <img
-                  src="https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=300&h=400&fit=crop"
-                  alt="Woman in white"
-                  className="w-full h-64 object-cover rounded-lg"
-                />
-                <img
-                  src="https://images.unsplash.com/photo-1594736797933-d0a9ba25c5aa?w=300&h=200&fit=crop"
-                  alt="Woman in lingerie"
-                  className="w-full h-40 object-cover rounded-lg"
-                />
-              </div>
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2">
-                  <img
-                    src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=150&h=150&fit=crop"
-                    alt="Product box"
-                    className="w-full h-20 object-cover rounded-lg"
-                  />
-                  <img
-                    src="https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=150&h=150&fit=crop"
-                    alt="Product box"
-                    className="w-full h-20 object-cover rounded-lg"
-                  />
-                </div>
-                <img
-                  src="https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=300&h=300&fit=crop"
-                  alt="Laundry products"
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-                <img
-                  src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=300&h=200&fit=crop"
-                  alt="Woman relaxing"
-                  className="w-full h-32 object-cover rounded-lg"
-                />
-                <div className="grid grid-cols-2 gap-2">
-                  <img
-                    src="https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=150&h=150&fit=crop"
-                    alt="Product"
-                    className="w-full h-20 object-cover rounded-lg"
-                  />
-                  <img
-                    src="https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=150&h=150&fit=crop"
-                    alt="Product"
-                    className="w-full h-20 object-cover rounded-lg"
-                  />
-                </div>
-              </div>
-            </div>
+            <div className="container mx-auto px-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-0 items-center overflow-hidden rounded-lg shadow">
 
-            {/* Content */}
-            <div className="bg-green-100 p-12 rounded-lg">
-              <h3 className="text-4xl font-bold text-gray-900 mb-8">About us</h3>
-              <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                At MALORY, our vision is to empower women by providing them with high-quality, innovative Laundry and feminine care products.
-              </p>
-              <button className="bg-white text-gray-900 px-8 py-3 font-small border border-gray-300 hover:bg-gray-50 transition-colors duration-200">
-                MORE
-              </button>
+                {/* Left: Image */}
+                <div className="w-full h-full">
+                  <img
+                    src="https://www.malory.com.au/cdn/shop/files/a69ede86a9b5fe9e7f808acffc20748d.png?v=1753502527&width=1500" // place your image in public/images
+                    alt="Lanty Combo Deal"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                {/* Right: Text */}
+                <div className=" w-full h-full object-cover bg-[#98a69e] p-10 flex flex-col justify-center text-center">
+                  <h2 className="text-2xl md:text-3xl text-white font-bold mb-4">
+                      About us
+                  </h2>
+                  <p className="text-white mb-6">
+                    At LANTY, our vision is to empower women by providing them with high-quality,innovative Laundry and feminine care products.
+                  </p>
+                <div className="flex justify-center">
+                  <button
+                    className="bt-medium bg-white text-[#98a69e] w-24 py-2 text-sm font-medium hover:bg-gray-700 transition-colors duration-200"
+                  >
+                    MORE
+                  </button>
+                </div>
+
+
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
       {/* Bestsellers Section */}
       <section className="py-16 bg-gray-50">
@@ -322,12 +280,12 @@ const MaloryHomepage: React.FC = () => {
             <div className="text-center lg:text-left">
               <h3 className="text-4xl font-bold text-gray-900 mb-8">Bestsellers</h3>
               <p className="text-lg text-gray-700 mb-4">
-                For all orders in MALORY online store, apply code
+                For all orders in Lanty online store, apply code
               </p>
               <p className="text-lg font-semibold text-gray-900 mb-8">
                 DEAL20 to get 0% OFF
               </p>
-              <button className="bg-gray-600 text-white px-8 py-3 font-small hover:bg-gray-700 transition-colors duration-200">
+              <button className="bg-[#98a69e] text-white px-8 py-3 font-small hover:bg-gray-700 transition-colors duration-200">
                 Shop Now
               </button>
             </div>
@@ -336,11 +294,11 @@ const MaloryHomepage: React.FC = () => {
             <div className="relative">
               <img
                 src="https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=600&h=400&fit=crop"
-                alt="Malory Products"
+                alt="Lanty Products"
                 className="w-full h-96 object-cover rounded-lg"
               />
               <div className="absolute top-4 right-4 bg-white bg-opacity-90 p-4 rounded-lg">
-                <h4 className="text-lg font-bold text-gray-900">MALORY</h4>
+                <h4 className="text-lg font-bold text-gray-900">Lanty</h4>
                 <p className="text-sm text-gray-600">Your Trusted Companion for</p>
                 <p className="text-sm text-gray-600">Laundry and Feminine Hygiene</p>
               </div>
@@ -350,7 +308,7 @@ const MaloryHomepage: React.FC = () => {
       </section>
 
       {/* Mission Statement */}
-      <section className="py-20 bg-green-200 relative overflow-hidden">
+      <section className="py-20 bg-[#98a69e] relative overflow-hidden">
         {/* Decorative botanical elements */}
         <div className="absolute inset-0 opacity-20">
           <svg className="absolute top-0 left-0 w-64 h-64" viewBox="0 0 100 100" fill="none">
@@ -377,7 +335,7 @@ const MaloryHomepage: React.FC = () => {
             laundry products and feminine hygiene products and information, helping women
             better manage their menstrual cycles and daily life."
           </blockquote>
-          <cite className="text-lg text-white font-small">MALORY</cite>
+          <cite className="text-lg text-white font-small">Lanty</cite>
         </div>
       </section>
 
@@ -390,26 +348,29 @@ const MaloryHomepage: React.FC = () => {
           <div className="w-full h-full">
             <img
               src="https://www.malory.com.au/cdn/shop/files/5_1_4he1_8.jpg?v=1752462368&width=1070" // place your image in public/images
-              alt="Malory Combo Deal"
+              alt="Lanty Combo Deal"
               className="w-full h-full object-cover"
             />
           </div>
 
           {/* Right: Text */}
-          <div className="bg-[#D9CBB9] p-10 flex flex-col justify-center">
+          <div className=" w-full h-full object-cover bg-[#D9CBB9] p-10 flex flex-col justify-center text-center">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Malory Combo Deals: Elevate Your Laundry Experience with Exclusive Bundles
+              Lanty Combo Deals: Elevate Your Laundry Experience with Exclusive Bundles
             </h2>
             <p className="text-gray-800 mb-6">
-              Discover Malory's Combo Deals—curated bundles of top laundry products
+              Discover Lanty's Combo Deals—curated bundles of top laundry products
               for an 8x cleaner, fresher load with long-lasting fragrance every time.
             </p>
-            <a
-              href="" // adjust to your Laravel route
-              className="inline-block bg-gray-800 text-white px-6 py-3 rounded shadow hover:bg-black transition"
+          <div className="flex justify-center">
+            <button
+              className="bt-small bg-gray-600 text-white w-24 py-2 text-sm font-medium hover:bg-gray-700 transition-colors duration-200"
             >
               Shop New
-            </a>
+            </button>
+          </div>
+
+
           </div>
         </div>
       </div>
@@ -569,7 +530,7 @@ const MaloryHomepage: React.FC = () => {
                   <span className="font-small">Contact time:</span> Monday-Friday 9am-5pm AEST
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-small">Email:</span> service@malory.com.au
+                  <span className="font-small">Email:</span> service@Lanty.com.au
                 </p>
                 <p className="text-gray-600">
                   <span className="font-small">Company Address:</span> D7/11-15 Moxon Rd, Punchbowl NSW 2196 Australia
@@ -598,4 +559,4 @@ const MaloryHomepage: React.FC = () => {
   );
 };
 
-export default MaloryHomepage;
+export default LantyHomepage;
