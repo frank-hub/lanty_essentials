@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Products;
+use App\Models\ProductImage;
+use Illuminate\Support\Str;
 
 class ProductsController extends Controller
 {
@@ -19,7 +23,7 @@ class ProductsController extends Controller
             'price' => 'required|numeric|min:0',
             'compare_price' => 'nullable|numeric|min:0',
             'cost' => 'nullable|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
+            // 'category_id' => 'required|exists:categories,id',
             'tags' => 'nullable|string',
             'weight' => 'nullable|numeric|min:0',
             'dimensions.length' => 'nullable|numeric|min:0',
@@ -45,17 +49,18 @@ class ProductsController extends Controller
         try {
             DB::beginTransaction();
 
-            // Create the product
-            $product = Product::create([
+            $product = Products::create([
                 'name' => $validated['name'],
+                'thumbnail' => $validated['name'],
                 'slug' => Str::slug($validated['name']),
                 'description' => $validated['description'] ?? null,
                 'short_description' => $validated['short_description'] ?? null,
                 'sku' => $validated['sku'],
                 'price' => $validated['price'],
+                'images' => '20',
                 'compare_price' => $validated['compare_price'] ?? null,
                 'cost' => $validated['cost'] ?? null,
-                'category_id' => $validated['category_id'],
+                'category' => 78997,
                 'tags' => $validated['tags'] ?? null,
                 'weight' => $validated['weight'] ?? null,
                 'dimensions' => json_encode($validated['dimensions'] ?? []),
@@ -68,49 +73,71 @@ class ProductsController extends Controller
                 'specifications' => $validated['specifications'] ?? null,
             ]);
 
-            // Handle images
-            if (isset($validated['images']) && is_array($validated['images'])) {
-                foreach ($validated['images'] as $index => $imageData) {
-                    // Handle base64 image upload
-                    if (strpos($imageData['url'], 'data:image') === 0) {
-                        $imagePath = $this->uploadBase64Image($imageData['url'], $product->id);
-                    } else {
-                        $imagePath = $imageData['url'];
-                    }
+            // Images
+            // foreach ($validated['images'] as $index => $imageData) {
+            //     $imagePath = (strpos($imageData['url'], 'data:image') === 0)
+            //         ? $this->uploadBase64Image($imageData['url'], $product->id)
+            //         : $imageData['url'];
 
-                    ProductImage::create([
-                        'product_id' => $product->id,
-                        'image_path' => $imagePath,
-                        'is_primary' => $imageData['is_primary'] ?? ($index === 0),
-                        'sort_order' => $index,
-                    ]);
+            //     ProductImage::create([
+            //         'product_id' => $product->id,
+            //         'image_path' => $imagePath,
+            //         'is_primary' => $imageData['is_primary'] ?? ($index === 0),
+            //         'sort_order' => $index,
+            //     ]);
+            // }
+
+            foreach ($validated['images'] as $index => $imageData) {
+
+                $imagePath = $imageData['url'];
+
+                // Check if it's base64
+                if (strpos($imageData['url'], 'data:image') === 0) {
+                    // Remove "data:image/...;base64," part
+                    @list($type, $fileData) = explode(';', $imageData['url']);
+                    @list(, $fileData) = explode(',', $fileData);
+
+                    $fileData = base64_decode($fileData);
+
+                    // Get extension
+                    @list(, $extension) = explode('/', $type);
+                    $extension = $extension ?: 'png';
+
+                    // Generate unique file name
+                    $fileName = 'product_' . $product->id . '_' . time() . '_' . $index . '.' . $extension;
+
+                    // Save to public storage
+                    $filePath = 'uploads/products/' . $fileName;
+                    file_put_contents(public_path($filePath), $fileData);
+
+                    $imagePath = $filePath;
                 }
+
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $imagePath,
+                    'is_primary' => $imageData['is_primary'] ?? ($index === 0),
+                    'sort_order' => $index,
+                ]);
             }
 
-            // Handle variants
-            if (isset($validated['variants']) && is_array($validated['variants'])) {
-                foreach ($validated['variants'] as $variantData) {
-                    ProductVariant::create([
-                        'product_id' => $product->id,
-                        'name' => $variantData['name'],
-                        'sku' => $variantData['sku'] ?? $product->sku . '-' . Str::slug($variantData['name']),
-                        'price' => $variantData['price'],
-                        'stock' => $variantData['stock'],
-                    ]);
-                }
-            }
+
 
             DB::commit();
 
-            return redirect()->route('all_products')
-                ->with('success', 'Product created successfully!');
+            return response()->json([
+                'message' => 'Product created successfully!',
+                'product' => $product->load(['images']),
+            ], 201);
 
         } catch (\Exception $e) {
-            DB::rollBack();
-            
-            return back()
-                ->withInput()
-                ->with('error', 'Failed to create product: ' . $e->getMessage());
+            \Log::error('Product creation failed: '.$e->getMessage());
+            return response()->json([
+                'message' => 'Failed to create product',
+                'error' => $e->getMessage(),
+            ], 500);
         }
+
     }
+
 }

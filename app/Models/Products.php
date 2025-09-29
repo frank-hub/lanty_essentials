@@ -7,12 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class Products extends Model
 {
     protected $fillable = [
-        'sku', 'name', 'price', 'weight', 'descriptions',
-        'thumbnail', 'image', 'category', 'create_date', 'stock'
+        'sku', 'name', 'price', 'weight', 'description',
+        'thumbnail', 'images', 'category', 'create_date', 'stock'
     ];
 
     public function categories(){
         return $this->belongsToMany(Category::class,'product_categories');
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class, 'product_id');
     }
 
     public function options(){

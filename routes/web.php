@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\ProductsController;
 
 
 Route::get('/', function () {
@@ -39,7 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('admin/addProducts');
     });
 
-    Route::resource('products', ProductController::class);
+    Route::post('/add_product', [ProductsController::class, 'store'])->name('add_product');
 
 });
 

@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('price',10,2);
             $table->string('weight',10,2)->nullable();
-            $table->text('descriptions');
+            $table->text('description');
             $table->string('thumbnail');
-            $table->string('image');
+            $table->string('images');
             $table->unsignedBigInteger('category');
             $table->integer('stock')->default(0);
             $table->timestamp('create_date')->useCurrent();

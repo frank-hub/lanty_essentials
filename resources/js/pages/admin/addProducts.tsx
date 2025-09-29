@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {router} from '@inertiajs/react'
+import axios from 'axios'
 import { 
   ArrowLeft, 
   Upload, 
@@ -178,18 +179,36 @@ const LantyAddProductPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = (status: 'draft' | 'active') => {
+  const handleSave = async (status: 'draft' | 'active') => {
     const updatedData = { ...productData, status };
     setProductData(updatedData);
+      console.log(updatedData)
 
     if (validateForm()) {
       // Here you would typically send data to your Laravel backend
-      console.log('Saving product:', updatedData);
-      console.log('Images:', images);
-      console.log('Variants:', variants);
+      try {
+        const response = await axios.post('add_product',{
+        ...updatedData,
+        images,
+        variants
+      });
+      console.log(updatedData)
+      console.log('Server Responce: ', response.data);
       
       // Show success message or redirect
       alert(`Product ${status === 'draft' ? 'saved as draft' : 'published'} successfully!`);
+      }catch (error: any){
+    //     if (error.response) {
+    //     // Laravel validation / server error
+    //     alert(`Error: ${error.response.data.message || 'Something went wrong'}`);
+    //   } else {
+    //     alert('Network error, please try again.');
+    //   }
+    //   console.error('Error saving product:', error);
+
+    alert(error.response?.data?.error || 'Something went wrong');
+    console.log(error.response?.data);
+    }
     }
   };
 
