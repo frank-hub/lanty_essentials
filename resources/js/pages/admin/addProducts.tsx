@@ -746,49 +746,6 @@ const LantyAddProductPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Organization */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Organization</h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Type
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent"
-                    placeholder="e.g., Physical Product"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Vendor
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent"
-                    placeholder="LANTY"
-                    defaultValue="LANTY"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Collections
-                  </label>
-                  <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent">
-                    <option value="">Select collection</option>
-                    <option value="featured">Featured Products</option>
-                    <option value="bestsellers">Bestsellers</option>
-                    <option value="new-arrivals">New Arrivals</option>
-                    <option value="sale">Sale Items</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
             {/* Preview Card */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Preview</h3>
@@ -833,28 +790,6 @@ const LantyAddProductPage: React.FC = () => {
                     </span>
                   )}
                 </div>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Actions</h3>
-              
-              <div className="space-y-3">
-                <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                  <Eye className="w-4 h-4" />
-                  <span>Preview Product</span>
-                </button>
-                
-                <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                  {/* <Copy className="w-4 h-4" /> */}
-                  <span>Duplicate Product</span>
-                </button>
-                
-                <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors">
-                  {/* <Trash2 className="w-4 h-4" /> */}
-                  <span>Delete Product</span>
-                </button>
               </div>
             </div>
           </div>

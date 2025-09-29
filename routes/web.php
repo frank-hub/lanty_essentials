@@ -31,8 +31,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::get('products', function(){
-        return Inertia::render('admin/products')->name('all_products');
+    Route::get('/products', function(){
+        return Inertia::render('admin/products');
     });
 
     Route::get('add_product',function(){
