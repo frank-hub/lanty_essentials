@@ -6,11 +6,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Products;
 use App\Models\ProductImage;
+use Inertia\Inertia;
 use Illuminate\Support\Str;
 
 class ProductsController extends Controller
 {
-        /**
+
+    public function index(){
+        // To Do
+        // include : sales: 234
+        // include : status: active/draft
+        // include : image link
+
+        return Inertia::render('admin/products', [
+                'products' => Products::with('images')->orderBy('created_at', 'desc')->get(),
+            ]);
+    }
+
+    
+
+    /**
      * Store a newly created product in storage.
      */
     public function store(Request $request)
@@ -23,12 +38,8 @@ class ProductsController extends Controller
             'price' => 'required|numeric|min:0',
             'compare_price' => 'nullable|numeric|min:0',
             'cost' => 'nullable|numeric|min:0',
-            // 'category_id' => 'required|exists:categories,id',
+            'category' => 'required',
             'tags' => 'nullable|string',
-            'weight' => 'nullable|numeric|min:0',
-            'dimensions.length' => 'nullable|numeric|min:0',
-            'dimensions.width' => 'nullable|numeric|min:0',
-            'dimensions.height' => 'nullable|numeric|min:0',
             'stock' => 'nullable|integer|min:0',
             'track_quantity' => 'boolean',
             'status' => 'required|in:draft,active,inactive',
@@ -46,6 +57,7 @@ class ProductsController extends Controller
             'variants.*.sku' => 'nullable|string',
         ]);
 
+
         try {
             DB::beginTransaction();
 
@@ -60,10 +72,8 @@ class ProductsController extends Controller
                 'images' => '20',
                 'compare_price' => $validated['compare_price'] ?? null,
                 'cost' => $validated['cost'] ?? null,
-                'category' => 78997,
+                'category' => $validated['category'] ?? null,
                 'tags' => $validated['tags'] ?? null,
-                'weight' => $validated['weight'] ?? null,
-                'dimensions' => json_encode($validated['dimensions'] ?? []),
                 'stock' => $validated['stock'] ?? 0,
                 'track_quantity' => $validated['track_quantity'] ?? true,
                 'status' => $validated['status'],
@@ -73,19 +83,6 @@ class ProductsController extends Controller
                 'specifications' => $validated['specifications'] ?? null,
             ]);
 
-            // Images
-            // foreach ($validated['images'] as $index => $imageData) {
-            //     $imagePath = (strpos($imageData['url'], 'data:image') === 0)
-            //         ? $this->uploadBase64Image($imageData['url'], $product->id)
-            //         : $imageData['url'];
-
-            //     ProductImage::create([
-            //         'product_id' => $product->id,
-            //         'image_path' => $imagePath,
-            //         'is_primary' => $imageData['is_primary'] ?? ($index === 0),
-            //         'sort_order' => $index,
-            //     ]);
-            // }
 
             foreach ($validated['images'] as $index => $imageData) {
 
@@ -126,7 +123,7 @@ class ProductsController extends Controller
             DB::commit();
 
             return response()->json([
-                'message' => 'Product created successfully!',
+                'message' => 'Product created successfully',
                 'product' => $product->load(['images']),
             ], 201);
 

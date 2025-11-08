@@ -1,58 +1,25 @@
 import React from 'react';
-import { Search, User, ShoppingCart, ChevronDown } from 'lucide-react';
-
+import { Search, User, ShoppingCart, ChevronDown} from 'lucide-react';
+import { usePage , router ,Link} from '@inertiajs/react';
 interface Product {
   id: string;
+  sku: string;
   name: string;
-  originalPrice?: string;
-  salePrice: string;
-  image: string;
-  onSale?: boolean;
+  category: string;
+  price: number;
+  stock: number;
+  status: 'active' | 'inactive' | 'draft';
+  images: { id: string; image_path: string }[];
+  createdAt: string;
+  sales: number;
+}
+
+interface WelcomePageProps {
+  products: Product[];
 }
 
 const LantyHomepage: React.FC = () => {
-  const flashSaleProducts: Product[] = [
-    {
-      id: '1',
-      name: 'Lanty Antibacterial Concentrated Underwear Laundry Detergent 300ml',
-      originalPrice: 'KSh 9,000 ',
-      salePrice: 'KSh 4,000 ',
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop',
-      onSale: true
-    },
-    {
-      id: '2',
-      name: 'Lanty Laundry Pods Combo',
-      originalPrice: 'KSh 26,000 ',
-      salePrice: 'KSh 16,000 ',
-      image: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=300&h=300&fit=crop',
-      onSale: true
-    },
-    {
-      id: '3',
-      name: 'Lanty 4 in 1 laundry pods 20 Packs',
-      originalPrice: 'KSh 7,000 ',
-      salePrice: 'KSh 4,000 ',
-      image: 'https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=300&h=300&fit=crop',
-      onSale: true
-    },
-    {
-      id: '4',
-      name: 'Lanty camellia scented Bulk laundry detergent 2.0',
-      originalPrice: 'KSh 9,000 ',
-      salePrice: 'KSh 6,000 ',
-      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&h=300&fit=crop',
-      onSale: true
-    },
-    {
-      id: '5',
-      name: 'Lanty tableware cleaner & vegetable cleaner',
-      originalPrice: 'KSh 9,000 ',
-      salePrice: 'KSh 3,000 ',
-      image: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=300&h=300&fit=crop',
-      onSale: true
-    },
-  ];
+  const flashSaleProducts: Product[] = usePage<WelcomePageProps>().props.products;
 
   const categories = [
     {
@@ -113,7 +80,7 @@ const LantyHomepage: React.FC = () => {
             </nav>
 
             {/* Right side */}
-            <div className="flex items-center space-x-4">              
+            <div className="flex items-center space-x-4">
               <User className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
               <ShoppingCart className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
             </div>
@@ -197,14 +164,15 @@ const LantyHomepage: React.FC = () => {
           <h3 className="text-3xl font-bold text-gray-900 mb-12">Flash sale</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
             {flashSaleProducts.map((product) => (
+              <Link href={`/product_details/${product.id}`} key={product.id}>
               <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition">
                 <div className="relative">
                   <img
-                    src={product.image}
+                    src={product.images[0]?.image_path}
                     alt={product.name}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  {product.onSale && (
+                  {product.category && (
                     <span className="absolute top-3 left-3 bg-black text-white px-2 py-1 text-sm font-small rounded">
                       Sale
                     </span>
@@ -215,17 +183,18 @@ const LantyHomepage: React.FC = () => {
                     {product.name}
                   </h4>
                   <div className="flex items-center justify-between space-x-2">
-                    {product.originalPrice && (
-                      <span className="text-sm text-gray-500 line-through">
-                        {product.originalPrice}
+                    {product.category && (
+                      <span className="text-sm text-gray-500">
+                        {product.category}
                       </span>
                     )}
                     <span className="text-sm font-medium text-gray-900">
-                      {product.salePrice}
+                      {product.price}
                     </span>
                   </div>
                 </div>
               </div>
+                </Link>
             ))}
           </div>
           <div className="text-center mt-12">

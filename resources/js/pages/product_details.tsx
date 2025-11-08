@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
 import { Search, User, ShoppingCart, ChevronDown, Minus, Plus, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 
-// Then use it in your buttons
-<button 
-  onClick={() => router.visit('/laundry-detergents')}
-  className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
->
-  Laundry Detergents
-</button>
+interface ProductImage {
+  id: number;
+  image_path: string;
+  is_primary: boolean;
+  sort_order: number;
+}
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  sku: string;
+  price: number;
+  compare_price?: number;
+  stock: number;
+  category: string;
+  images: ProductImage[];
+  created_at: string;
+  updated_at: string;
+}
+
+interface PageProps {
+  product: Product;
+}
+
 interface RelatedProduct {
   id: string;
   name: string;
@@ -20,16 +38,18 @@ interface RelatedProduct {
 }
 
 const LantyProductDetail: React.FC = () => {
-  const [quantity, setQuantity] = useState(2);
-  const [selectedVariant, setSelectedVariant] = useState('1 Bottle');
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { product } = usePage<PageProps>().props;
 
-  const productImages = [
-    'https://www.malory.com.au/cdn/shop/files/3e9b4c31c67413c55ff1042ab9594d2.jpg?v=1753501380&width=2000',
-    'https://www.malory.com.au/cdn/shop/collections/11_81b78de9-4ad7-406c-bc01-e8da581ea931.jpg?v=1758272387',
-    'https://www.malory.com.au/cdn/shop/collections/0cd85820ed6b69d896d3210b1850ea55.jpg?v=1753502092&width=1000',
-    'https://www.malory.com.au/cdn/shop/files/5_1_4he1_8.jpg?v=1752462368&width=1070'
-  ];
+  // Get primary image or first image
+  const primaryImage = product.images.find((img) => img.is_primary);
+  const sortedImages = [...product.images].sort((a, b) => a.sort_order - b.sort_order);
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(
+    primaryImage ? sortedImages.findIndex(img => img.id === primaryImage.id) : 0
+  );
+  const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState('1 Bottle');
+  const [addingToCart, setAddingToCart] = useState(false);
 
   const relatedProducts: RelatedProduct[] = [
     {
@@ -73,16 +93,63 @@ const LantyProductDetail: React.FC = () => {
   };
 
   const increaseQuantity = () => {
-    setQuantity(quantity + 1);
+    if (quantity < product.stock) {
+      setQuantity(quantity + 1);
+    }
   };
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
+    setCurrentImageIndex((prev) => (prev + 1) % sortedImages.length);
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
+    setCurrentImageIndex((prev) => (prev - 1 + sortedImages.length) % sortedImages.length);
   };
+
+  const handleAddToCart = () => {
+    setAddingToCart(true);
+
+    router.post('/cart/add', {
+      product_id: product.id,
+      quantity: quantity,
+      variant: selectedVariant,
+      price: product.price
+    }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        setAddingToCart(false);
+        // Show success notification
+        alert('Product added to cart successfully!');
+      },
+      onError: (errors) => {
+        setAddingToCart(false);
+        console.error('Error adding to cart:', errors);
+        alert('Failed to add product to cart');
+      }
+    });
+  };
+
+  const handleBuyNow = () => {
+    router.post('/cart/add', {
+      product_id: product.id,
+      quantity: quantity,
+      variant: selectedVariant,
+      price: product.price
+    }, {
+      onSuccess: () => {
+        router.visit('/checkout');
+      },
+      onError: (errors) => {
+        console.error('Error:', errors);
+        alert('Failed to process order');
+      }
+    });
+  };
+
+  // Calculate discount percentage
+  const discountPercentage = product.compare_price
+    ? Math.round(((product.compare_price - product.price) / product.compare_price) * 100)
+    : 0;
 
   return (
     <div className="min-h-screen bg-white">
@@ -101,43 +168,42 @@ const LantyProductDetail: React.FC = () => {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-gray-900">LANTY</h1>
+              <button onClick={() => router.visit('/')}>
+                <h1 className="text-2xl font-bold text-gray-900">LANTY</h1>
+              </button>
             </div>
 
-            {/* Navigation */}
             <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+              <button onClick={() => router.visit('/products/category/sanitary-pads')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 Sanitary Pads
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2 border-gray-900">
+              </button>
+              <button onClick={() => router.visit('/products/category/laundry-detergents')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2 border-gray-900">
                 Laundry Detergents
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+              </button>
+              <button onClick={() => router.visit('/products/category/laundry-pods')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 Laundry Pods
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+              </button>
+              <button onClick={() => router.visit('/products/category/combo')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 Combo
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+              </button>
+              <button onClick={() => router.visit('/products/category/skin-care')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 Skin Care
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+              </button>
+              <button onClick={() => router.visit('/products/category/home-cleaning')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 Home Cleaning
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+              </button>
+              <button onClick={() => router.visit('/faqs')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 FAQS
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+              </button>
+              <button onClick={() => router.visit('/contact')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
                 Contact Us
-              </a>
+              </button>
             </nav>
 
-            {/* Right side */}
-            <div className="flex items-center space-x-4">              
-              <User className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
-              <ShoppingCart className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
+            <div className="flex items-center space-x-4">
+              <User className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" onClick={() => router.visit('/account')} />
+              <ShoppingCart className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" onClick={() => router.visit('/cart')} />
             </div>
           </div>
         </div>
@@ -150,65 +216,56 @@ const LantyProductDetail: React.FC = () => {
           <div className="space-y-4">
             {/* Main Image */}
             <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
-              <img
-                src={productImages[currentImageIndex]}
-                alt="LANTY Antibacterial Concentrated Underwear Laundry Detergent"
-                className="w-full h-full object-contain"
-              />
-              <button
-                onClick={prevImage}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow"
-              >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
-              </button>
-              <button
-                onClick={nextImage}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow"
-              >
-                <ChevronRight className="w-5 h-5 text-gray-600" />
-              </button>
+              {sortedImages.length > 0 ? (
+                <img
+                  src={`/${sortedImages[currentImageIndex].image_path}`}
+                  alt={product.name}
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  No image available
+                </div>
+              )}
+
+              {sortedImages.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-gray-600" />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-2 shadow"
+                  >
+                    <ChevronRight className="w-5 h-5 text-gray-600" />
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Thumbnail Images */}
-            <div className="grid grid-cols-4 gap-2">
-              {productImages.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentImageIndex(index)}
-                  className={`aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 ${
-                    currentImageIndex === index ? 'border-[#98a69e]' : 'border-transparent'
-                  }`}
-                >
-                  <img
-                    src={image}
-                    alt={`Product view ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-
-            {/* Video Section */}
-            <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
-              <img
-                src="https://www.malory.com.au/cdn/shop/files/5_1_4he1_8.jpg?v=1752462368&width=1070"
-                alt="Product video thumbnail"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-                <button className="bg-red-600 hover:bg-red-700 text-white rounded-full p-4">
-                  <svg className="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
-                </button>
+            {sortedImages.length > 1 && (
+              <div className="grid grid-cols-4 gap-2">
+                {sortedImages.map((image, index) => (
+                  <button
+                    key={image.id}
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 ${
+                      currentImageIndex === index ? 'border-[#98a69e]' : 'border-transparent'
+                    }`}
+                  >
+                    <img
+                      src={`/${image.image_path}`}
+                      alt={`${product.name} view ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
               </div>
-              <div className="absolute top-4 left-4 bg-white bg-opacity-90 px-2 py-1 rounded text-sm">
-                LANTY
-              </div>
-              <div className="absolute bottom-4 left-4 text-white text-sm">
-                Gentle Care for Every Inch of Fabric...
-              </div>
-            </div>
+            )}
 
             {/* Share Button */}
             <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
@@ -223,18 +280,36 @@ const LantyProductDetail: React.FC = () => {
             <div>
               <p className="text-sm text-gray-600 mb-2">LANTY</p>
               <h1 className="text-3xl font-bold text-gray-900 leading-tight">
-                LANTY Antibacterial Concentrated Underwear Laundry Detergent 300ml
+                {product.name}
               </h1>
             </div>
 
             {/* Price */}
             <div className="flex items-center space-x-4">
-              <span className="text-lg text-gray-500 line-through">KSh 9,000</span>
-              <span className="text-2xl font-bold text-gray-900">KSh 4,000</span>
-              <span className="bg-black text-white px-3 py-1 text-sm font-medium rounded">
-                Sale
+              {product.compare_price && (
+                <span className="text-lg text-gray-500 line-through">
+                  KSh {product.compare_price.toLocaleString()}
+                </span>
+              )}
+              <span className="text-2xl font-bold text-gray-900">
+                KSh {product.price.toLocaleString()}
+              </span>
+              {discountPercentage > 0 && (
+                <span className="bg-black text-white px-3 py-1 text-sm font-medium rounded">
+                  Save {discountPercentage}%
+                </span>
+              )}
+            </div>
+
+            {/* Stock Status */}
+            <div className="flex items-center space-x-2">
+              <span className={`text-sm font-medium ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {product.stock > 0 ? `In Stock (${product.stock} available)` : 'Out of Stock'}
               </span>
             </div>
+
+            {/* SKU */}
+            <p className="text-sm text-gray-600">SKU: {product.sku}</p>
 
             {/* Shipping Info */}
             <p className="text-sm text-gray-600">
@@ -269,36 +344,55 @@ const LantyProductDetail: React.FC = () => {
             </div>
 
             {/* Quantity Selector */}
-            <div className="space-y-3">
-              <p className="font-medium text-gray-900">Quantity</p>
-              <div className="flex items-center border border-gray-300 rounded-md w-32">
-                <button
-                  onClick={decreaseQuantity}
-                  className="p-2 hover:bg-gray-100 transition-colors"
-                >
-                  <Minus className="w-4 h-4 text-gray-600" />
-                </button>
-                <span className="flex-1 text-center py-2 border-x border-gray-300">
-                  {quantity}
-                </span>
-                <button
-                  onClick={increaseQuantity}
-                  className="p-2 hover:bg-gray-100 transition-colors"
-                >
-                  <Plus className="w-4 h-4 text-gray-600" />
-                </button>
+            {product.stock > 0 && (
+              <div className="space-y-3">
+                <p className="font-medium text-gray-900">Quantity</p>
+                <div className="flex items-center border border-gray-300 rounded-md w-32">
+                  <button
+                    onClick={decreaseQuantity}
+                    disabled={quantity <= 1}
+                    className="p-2 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Minus className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <span className="flex-1 text-center py-2 border-x border-gray-300">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={increaseQuantity}
+                    disabled={quantity >= product.stock}
+                    className="p-2 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Plus className="w-4 h-4 text-gray-600" />
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500">Maximum {product.stock} available</p>
               </div>
-            </div>
+            )}
 
             {/* Add to Cart Button */}
             <button
-            onClick={() => router.visit('/cart')}
-              className="w-full bg-white border-2 border-black text-black py-4 font-medium hover:bg-black hover:text-white transition-colors duration-200">
-              Add to cart
+              onClick={handleAddToCart}
+              disabled={product.stock === 0 || addingToCart}
+              className="w-full bg-white border-2 border-black text-black py-4 font-medium hover:bg-black hover:text-white transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {addingToCart ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Add to cart'}
+            </button>
+
+            {/* Buy Now Button */}
+            <button
+              onClick={handleBuyNow}
+              disabled={product.stock === 0}
+              className="w-full bg-[#98a69e] text-white py-4 font-medium rounded hover:bg-gray-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {product.stock === 0 ? 'Out of Stock' : 'Buy Now'}
             </button>
 
             {/* PayPal Button */}
-            <button className="w-full bg-yellow-400 text-black py-4 font-medium rounded hover:bg-yellow-500 transition-colors duration-200 flex items-center justify-center space-x-2">
+            <button
+              disabled={product.stock === 0}
+              className="w-full bg-yellow-400 text-black py-4 font-medium rounded hover:bg-yellow-500 transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <span>Pay with</span>
               <span className="font-bold text-blue-800">PayPal</span>
             </button>
@@ -309,45 +403,57 @@ const LantyProductDetail: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Product Description */}
+        {product.description && (
+          <div className="mt-16 border-t border-gray-200 pt-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Product Description</h2>
+            <div className="prose max-w-none">
+              <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                {product.description}
+              </p>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* You may also like Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h2 className="text-2xl font-bold text-gray-900 mb-8">You may also like</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {relatedProducts.map((product) => (
-            <div key={product.id} className="group cursor-pointer">
+          {relatedProducts.map((relatedProduct) => (
+            <div key={relatedProduct.id} className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-lg bg-gray-100 mb-4">
                 <img
-                  src={product.image}
-                  alt={product.name}
+                  src={relatedProduct.image}
+                  alt={relatedProduct.name}
                   className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                {product.onSale && (
+                {relatedProduct.onSale && (
                   <span className="absolute top-4 left-4 bg-black text-white px-3 py-1 text-sm font-medium rounded">
                     Sale
                   </span>
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <h3 className="font-medium text-gray-900 group-hover:text-[#98a69e] line-clamp-2">
-                  {product.name}
+                  {relatedProduct.name}
                 </h3>
                 <div className="flex items-center space-x-3">
-                  {product.originalPrice && (
+                  {relatedProduct.originalPrice && (
                     <span className="text-sm text-gray-500 line-through">
-                      {product.originalPrice}
+                      {relatedProduct.originalPrice}
                     </span>
                   )}
-                  {product.salePrice && (
+                  {relatedProduct.salePrice && (
                     <span className="font-semibold text-gray-900">
-                      {product.salePrice}
+                      {relatedProduct.salePrice}
                     </span>
                   )}
-                  {product.fromPrice && (
+                  {relatedProduct.fromPrice && (
                     <span className="font-semibold text-gray-900">
-                      {product.fromPrice}
+                      {relatedProduct.fromPrice}
                     </span>
                   )}
                 </div>
@@ -361,7 +467,6 @@ const LantyProductDetail: React.FC = () => {
       <footer className="bg-gray-100 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {/* Customer Service */}
             <div>
               <h4 className="text-lg font-semibold text-gray-900 mb-6">Customer Service</h4>
               <ul className="space-y-4">
@@ -374,8 +479,6 @@ const LantyProductDetail: React.FC = () => {
                 <li><a href="#" className="text-gray-600 hover:text-gray-900">Payment Method</a></li>
               </ul>
             </div>
-
-            {/* Shop */}
             <div>
               <h4 className="text-lg font-semibold text-gray-900 mb-6">Shop</h4>
               <ul className="space-y-4">
@@ -385,25 +488,22 @@ const LantyProductDetail: React.FC = () => {
                 <li><a href="#" className="text-gray-600 hover:text-gray-900">Talk to us</a></li>
               </ul>
             </div>
-
-            {/* Get in touch */}
             <div>
               <h4 className="text-lg font-semibold text-gray-900 mb-6">Get in touch</h4>
               <div className="space-y-4">
                 <p className="text-gray-600">
-                  <span className="font-small">Contact time:</span> Monday-Friday 9am-5pm AEST
+                  <span className="font-medium">Contact time:</span> Monday-Friday 9am-5pm EAT
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-small">Email:</span> service@Lanty.com.au
+                  <span className="font-medium">Email:</span> service@lanty.co.ke
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-small">Company Address:</span> D7/11-15 Moxon Rd, Punchbowl NSW 2196 Australia
+                  <span className="font-medium">Company Address:</span> Nairobi, Kenya
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Newsletter Signup */}
           <div className="mt-12 pt-8 border-t border-gray-200 text-center">
             <h4 className="text-lg font-semibold text-gray-900 mb-4">Shop Now</h4>
             <div className="max-w-md mx-auto flex">

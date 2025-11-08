@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import {router} from '@inertiajs/react'
 import axios from 'axios'
-import { 
-  ArrowLeft, 
-  Upload, 
-  X, 
-  Plus, 
-  Minus, 
-  Save, 
-  Eye, 
-  AlertCircle, 
+import {
+  ArrowLeft,
+  Upload,
+  X,
+  Plus,
+  Minus,
+  Save,
+  Eye,
+  AlertCircle,
   CheckCircle,
   Image as ImageIcon,
   Tag,
@@ -46,12 +46,6 @@ const LantyAddProductPage: React.FC = () => {
     cost: '',
     category: '',
     tags: '',
-    weight: '',
-    dimensions: {
-      length: '',
-      width: '',
-      height: ''
-    },
     stock: '',
     trackQuantity: true,
     status: 'draft',
@@ -68,7 +62,7 @@ const LantyAddProductPage: React.FC = () => {
 
   const categories = [
     'Laundry Detergents',
-    'Laundry Pods', 
+    'Laundry Pods',
     'Sanitary Pads',
     'Skin Care',
     'Home Cleaning'
@@ -79,7 +73,7 @@ const LantyAddProductPage: React.FC = () => {
       ...prev,
       [field]: value
     }));
-    
+
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({
@@ -89,15 +83,6 @@ const LantyAddProductPage: React.FC = () => {
     }
   };
 
-  const handleDimensionChange = (dimension: string, value: string) => {
-    setProductData(prev => ({
-      ...prev,
-      dimensions: {
-        ...prev.dimensions,
-        [dimension]: value
-      }
-    }));
-  };
 
   const addVariant = () => {
     const newVariant: ProductVariant = {
@@ -115,7 +100,7 @@ const LantyAddProductPage: React.FC = () => {
   };
 
   const updateVariant = (id: string, field: string, value: string | number) => {
-    setVariants(variants.map(v => 
+    setVariants(variants.map(v =>
       v.id === id ? { ...v, [field]: value } : v
     ));
   };
@@ -194,7 +179,7 @@ const LantyAddProductPage: React.FC = () => {
       });
       console.log(updatedData)
       console.log('Server Responce: ', response.data);
-      
+
       // Show success message or redirect
       alert(`Product ${status === 'draft' ? 'saved as draft' : 'published'} successfully!`);
       }catch (error: any){
@@ -225,7 +210,7 @@ const LantyAddProductPage: React.FC = () => {
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button 
+            <button
             onClick={()=> router.visit('dashboard')}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <ArrowLeft className="w-5 h-5 text-gray-600" />
@@ -235,19 +220,19 @@ const LantyAddProductPage: React.FC = () => {
               <p className="text-sm text-gray-600">Create a new product for your store</p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <button className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
               <Eye className="w-4 h-4 mr-2 inline" />
               Preview
             </button>
-            <button 
+            <button
               onClick={() => handleSave('draft')}
               className="px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors"
             >
               Save Draft
             </button>
-            <button 
+            <button
               onClick={() => handleSave('active')}
               className="px-6 py-2 bg-[#98a69e] text-white rounded-lg hover:bg-gray-700 transition-colors"
             >
@@ -564,61 +549,6 @@ const LantyAddProductPage: React.FC = () => {
                       </label>
                     </div>
 
-                    {/* Weight and Dimensions */}
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-4">Shipping</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Weight (kg)
-                          </label>
-                          <input
-                            type="number"
-                            step="0.01"
-                            value={productData.weight}
-                            onChange={(e) => handleInputChange('weight', e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent"
-                            placeholder="0.00"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Length (cm)
-                          </label>
-                          <input
-                            type="number"
-                            value={productData.dimensions.length}
-                            onChange={(e) => handleDimensionChange('length', e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent"
-                            placeholder="0"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Width (cm)
-                          </label>
-                          <input
-                            type="number"
-                            value={productData.dimensions.width}
-                            onChange={(e) => handleDimensionChange('width', e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent"
-                            placeholder="0"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Height (cm)
-                          </label>
-                          <input
-                            type="number"
-                            value={productData.dimensions.height}
-                            onChange={(e) => handleDimensionChange('height', e.target.value)}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent"
-                            placeholder="0"
-                          />
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 )}
 
@@ -667,7 +597,7 @@ const LantyAddProductPage: React.FC = () => {
             {/* Product Images */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Product Images</h3>
-              
+
               {errors.images && (
                 <p className="mb-4 text-sm text-red-600 flex items-center">
                   <AlertCircle className="w-4 h-4 mr-1" />
@@ -728,19 +658,20 @@ const LantyAddProductPage: React.FC = () => {
             {/* Product Status */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Product Status</h3>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Visibility
                   </label>
                   <select
-                    value={productData.visibility}
-                    onChange={(e) => handleInputChange('visibility', e.target.value)}
+                    value={productData.status}
+                    onChange={(e) => handleInputChange('status', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent"
                   >
-                    <option value="visible">Visible</option>
-                    <option value="hidden">Hidden</option>
+                    <option value="draft">Draft</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
                   </select>
                 </div>
               </div>
@@ -749,7 +680,7 @@ const LantyAddProductPage: React.FC = () => {
             {/* Preview Card */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Preview</h3>
-              
+
               <div className="border border-gray-200 rounded-lg overflow-hidden">
                 {images.length > 0 ? (
                   <img
@@ -762,7 +693,7 @@ const LantyAddProductPage: React.FC = () => {
                     <ImageIcon className="w-8 h-8 text-gray-400" />
                   </div>
                 )}
-                
+
                 <div className="p-4">
                   <h4 className="font-medium text-gray-900 mb-1">
                     {productData.name || 'Product Name'}

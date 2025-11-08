@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class ProductImage extends Model
 {
@@ -12,4 +14,9 @@ class ProductImage extends Model
         'is_primary',
         'sort_order'
     ];
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class, 'product_id');
+    }
 }

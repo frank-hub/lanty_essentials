@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { router } from '@inertiajs/react';
+import { router , usePage } from '@inertiajs/react';
 
-import { 
-  Search, 
-  Filter, 
-  Plus, 
-  MoreHorizontal, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  Copy, 
-  ChevronDown, 
-  Package, 
+import {
+  Search,
+  Filter,
+  Plus,
+  MoreHorizontal,
+  Edit,
+  Trash2,
+  Eye,
+  Copy,
+  ChevronDown,
+  Package,
   TrendingUp,
   AlertTriangle,
   CheckCircle,
@@ -32,7 +32,7 @@ interface Product {
   price: number;
   stock: number;
   status: 'active' | 'inactive' | 'draft';
-  image: string;
+  images: { id: string; image_path: string }[];
   createdAt: string;
   sales: number;
 }
@@ -45,68 +45,11 @@ const LantyProductsPage: React.FC = () => {
   const [filterCategory, setFilterCategory] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
 
-  const products: Product[] = [
-    {
-      id: '1',
-      sku: 'LT-001',
-      name: 'LANTY Antibacterial Concentrated Underwear Laundry Detergent 300ml',
-      category: 'Laundry Detergents',
-      price: 4000,
-      stock: 156,
-      status: 'active',
-      image: 'https://www.malory.com.au/cdn/shop/files/3e9b4c31c67413c55ff1042ab9594d2.jpg?v=1753501380&width=2000',
-      createdAt: '2024-01-10',
-      sales: 234
-    },
-    {
-      id: '2',
-      sku: 'LT-002',
-      name: 'LANTY Laundry Pods Combo Family Pack',
-      category: 'Laundry Pods',
-      price: 16000,
-      stock: 89,
-      status: 'active',
-      image: 'https://www.malory.com.au/cdn/shop/files/5_1_4he1_8.jpg?v=1752462368&width=1070',
-      createdAt: '2024-01-08',
-      sales: 189
-    },
-    {
-      id: '3',
-      sku: 'LT-003',
-      name: 'LANTY Tableware Cleaner & Vegetable Cleaner',
-      category: 'Home Cleaning',
-      price: 3000,
-      stock: 12,
-      status: 'active',
-      image: 'https://www.malory.com.au/cdn/shop/files/IMG_4748.jpg?v=1753499132&width=1000',
-      createdAt: '2024-01-05',
-      sales: 145
-    },
-    {
-      id: '4',
-      sku: 'LT-004',
-      name: 'LANTY Premium Sanitary Pads Ultra Thin',
-      category: 'Sanitary Pads',
-      price: 2500,
-      stock: 0,
-      status: 'inactive',
-      image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400&h=300&fit=crop',
-      createdAt: '2024-01-03',
-      sales: 98
-    },
-    {
-      id: '5',
-      sku: 'LT-005',
-      name: 'LANTY Skin Care Bundle Premium Collection',
-      category: 'Skin Care',
-      price: 8500,
-      stock: 45,
-      status: 'draft',
-      image: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&h=300&fit=crop',
-      createdAt: '2024-01-01',
-      sales: 67
-    }
-  ];
+  interface PageProps {
+    products: Product[];
+  }
+
+  const { products } = usePage<PageProps>().props;
 
   const categories = ['Laundry Detergents', 'Laundry Pods', 'Sanitary Pads', 'Skin Care', 'Home Cleaning'];
 
@@ -115,13 +58,13 @@ const LantyProductsPage: React.FC = () => {
                          product.sku.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || product.status === filterStatus;
     const matchesCategory = filterCategory === 'all' || product.category === filterCategory;
-    
+
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
   const handleSelectProduct = (productId: string) => {
-    setSelectedProducts(prev => 
-      prev.includes(productId) 
+    setSelectedProducts(prev =>
+      prev.includes(productId)
         ? prev.filter(id => id !== productId)
         : [...prev, productId]
     );
@@ -155,7 +98,7 @@ const LantyProductsPage: React.FC = () => {
               <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button 
+            <button
               onClick={()=> router.visit('dashboard')}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <ArrowLeft className="w-5 h-5 text-gray-600" />
@@ -165,10 +108,10 @@ const LantyProductsPage: React.FC = () => {
               <p className="text-gray-600">Manage your product inventory</p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-3">
-            
-            <button 
+
+            <button
             onClick={() => router.visit('/add_product')}
               className="px-6 py-2 bg-[#98a69e] text-white rounded-lg hover:bg-gray-700 transition-colors"
             >
@@ -193,6 +136,7 @@ const LantyProductsPage: React.FC = () => {
               <div>
                 <p className="text-2xl font-bold text-gray-900">{products.length}</p>
                 <p className="text-sm text-gray-600">Total Products</p>
+                <p></p>
               </div>
             </div>
           </div>
@@ -374,7 +318,7 @@ const LantyProductsPage: React.FC = () => {
             {filteredProducts.map((product) => {
               const stockStatus = getStockStatus(product.stock);
               const StockIcon = stockStatus.icon;
-              
+
               return (
                 <div key={product.id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center">
@@ -388,7 +332,7 @@ const LantyProductsPage: React.FC = () => {
                       {/* Product */}
                       <div className="col-span-4 flex items-center space-x-3">
                         <img
-                          src={product.image}
+                          src={product.images[0]?.image_path || product.images[0]?.image_path}
                           alt={product.name}
                           className="w-12 h-12 rounded-lg object-cover"
                         />
@@ -397,17 +341,17 @@ const LantyProductsPage: React.FC = () => {
                           <p className="text-sm text-gray-500">{product.sku}</p>
                         </div>
                       </div>
-                      
+
                       {/* Category */}
                       <div className="col-span-2">
                         <span className="text-sm text-gray-900">{product.category}</span>
                       </div>
-                      
+
                       {/* Price */}
                       <div className="col-span-2">
                         <span className="font-semibold text-gray-900">KSh {product.price.toLocaleString()}</span>
                       </div>
-                      
+
                       {/* Stock */}
                       <div className="col-span-1">
                         <div className="flex items-center space-x-1">
@@ -415,19 +359,19 @@ const LantyProductsPage: React.FC = () => {
                           <span className="text-sm font-medium">{product.stock}</span>
                         </div>
                       </div>
-                      
+
                       {/* Status */}
                       <div className="col-span-1">
                         <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${getStatusBadge(product.status)}`}>
                           {product.status}
                         </span>
                       </div>
-                      
+
                       {/* Sales */}
                       <div className="col-span-1">
                         <span className="text-sm font-medium text-gray-900">{product.sales}</span>
                       </div>
-                      
+
                       {/* Actions */}
                       <div className="col-span-1">
                         <div className="flex items-center space-x-2">
@@ -458,12 +402,12 @@ const LantyProductsPage: React.FC = () => {
           {filteredProducts.map((product) => {
             const stockStatus = getStockStatus(product.stock);
             const StockIcon = stockStatus.icon;
-            
+
             return (
               <div key={product.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
                 <div className="relative">
                   <img
-                    src={product.image}
+                    src={product.images[0]?.image_path || product.images[0]?.image_path}
                     alt={product.name}
                     className="w-full h-48 object-cover"
                   />
@@ -481,12 +425,12 @@ const LantyProductsPage: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="p-4">
                   <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">{product.name}</h3>
                   <p className="text-sm text-gray-500 mb-2">{product.sku}</p>
                   <p className="text-sm text-gray-600 mb-3">{product.category}</p>
-                  
+
                   <div className="flex items-center justify-between mb-3">
                     <span className="font-bold text-lg text-gray-900">KSh {product.price.toLocaleString()}</span>
                     <div className="flex items-center space-x-1">
@@ -494,7 +438,7 @@ const LantyProductsPage: React.FC = () => {
                       <span className="text-sm font-medium">{product.stock} in stock</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">{product.sales} sales</span>
                     <div className="flex items-center space-x-2">

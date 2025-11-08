@@ -8,8 +8,8 @@ class Category extends Model
 {
     protected $fillable = ['name', 'description', 'thumbnail'];
 
-    public function products(){
-        return $this->belongsToMany(Product::class,'product_categories');
-    }
+    // public function products(){
+    //     return $this->belongsToMany(Product::class,'product_categories');
+    // }
 
 }

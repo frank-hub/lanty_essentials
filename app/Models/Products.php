@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Products extends Model
 {
     protected $fillable = [
-        'sku', 'name', 'price', 'weight', 'description',
+        'sku', 'name', 'price', 'description','status',
         'thumbnail', 'images', 'category', 'create_date', 'stock'
     ];
 
-    public function categories(){
-        return $this->belongsToMany(Category::class,'product_categories');
-    }
+    // public function categories(){
+    //     return $this->belongsToMany(Category::class,'product_categories');
+    // }
 
     public function images()
     {
@@ -26,5 +26,10 @@ class Products extends Model
 
     public function orderDetails(){
         return $this->hasMany(orderDetail::class);
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class, 'product_id');
     }
 }

@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('sku')->unique();
             $table->string('name');
             $table->decimal('price',10,2);
-            $table->string('weight',10,2)->nullable();
             $table->text('description');
             $table->string('thumbnail');
             $table->string('images');
-            $table->unsignedBigInteger('category');
+            $table->string('status')->default('draft');
+            $table->string('category');
             $table->integer('stock')->default(0);
             $table->timestamp('create_date')->useCurrent();
             $table->timestamps();
