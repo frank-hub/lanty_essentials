@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, User, ShoppingCart, ChevronDown, ChevronRight, Truck, Shield, CreditCard, MapPin, Gift, CheckCircle, Menu, X } from 'lucide-react';
+import { Search, User, ShoppingCart, ChevronDown, ChevronRight, Truck, Shield, CreditCard, MapPin, Gift, CheckCircle, Menu, X, AlertCircle } from 'lucide-react';
 import { router, usePage } from '@inertiajs/react';
 
 interface CartItem {
@@ -42,6 +42,7 @@ const LantyCheckoutPage: React.FC = () => {
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
   const [shippingInfo, setShippingInfo] = useState<ShippingInfo>({
     firstName: '',
     lastName: '',
@@ -61,14 +62,90 @@ const LantyCheckoutPage: React.FC = () => {
       ...prev,
       [field]: value
     }));
+    setError('');
+  };
+
+  const validateForm = (): boolean => {
+    if (!shippingInfo.firstName.trim()) {
+      setError('First name is required');
+      return false;
+    }
+    if (!shippingInfo.lastName.trim()) {
+      setError('Last name is required');
+      return false;
+    }
+    if (!shippingInfo.email.trim()) {
+      setError('Email is required');
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shippingInfo.email)) {
+      setError('Please enter a valid email');
+      return false;
+    }
+    if (!shippingInfo.phone.trim()) {
+      setError('Phone number is required');
+      return false;
+    }
+    if (!shippingInfo.address.trim()) {
+      setError('Address is required');
+      return false;
+    }
+    if (!shippingInfo.city.trim()) {
+      setError('City is required');
+      return false;
+    }
+    return true;
   };
 
   const completeOrder = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     setIsSubmitting(true);
+    setError('');
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Get CSRF token from meta tag
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+      if (!csrfToken) {
+        throw new Error('Security token not found. Please refresh the page and try again.');
+      }
+
+      const response = await fetch('/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: shippingInfo.firstName,
+          lastName: shippingInfo.lastName,
+          email: shippingInfo.email,
+          phone: shippingInfo.phone,
+          address: shippingInfo.address,
+          city: shippingInfo.city,
+          postalCode: shippingInfo.postalCode,
+          shippingMethod: shippingMethod,
+          paymentMethod: paymentMethod,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || 'Order processing failed');
+      }
+
       setOrderCompleted(true);
+      setTimeout(() => {
+        router.visit('/products');
+      }, 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
+      console.error('Checkout error:', err);
     } finally {
       setIsSubmitting(false);
     }
@@ -78,7 +155,7 @@ const LantyCheckoutPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
             <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
 
@@ -87,22 +164,20 @@ const LantyCheckoutPage: React.FC = () => {
             Thank you for choosing LANTY! Your order has been confirmed and will be processed within 24 hours.
           </p>
 
-          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-            <div className="space-y-3">
-              <div>
-                <p className="text-xs text-gray-600">Order Total</p>
-                <p className="font-semibold text-lg">KSh {finalTotal.toLocaleString()}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-600">Estimated Delivery</p>
-                <p className="text-sm font-medium text-[#98a69e]">
-                  {shippingMethod === 'express' ? '1-2 Business Days' : '3-5 Business Days'}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-600">Shipped To</p>
-                <p className="text-sm font-medium">{shippingInfo.city}, Kenya</p>
-              </div>
+          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left space-y-3">
+            <div>
+              <p className="text-xs text-gray-600">Order Total</p>
+              <p className="font-semibold text-lg">KSh {finalTotal.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-600">Shipping Method</p>
+              <p className="text-sm font-medium text-[#98a69e]">
+                {shippingMethod === 'express' ? 'Express (1-2 Business Days)' : 'Standard (3-5 Business Days)'}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-600">Shipping To</p>
+              <p className="text-sm font-medium">{shippingInfo.city}, Kenya</p>
             </div>
           </div>
 
@@ -114,7 +189,7 @@ const LantyCheckoutPage: React.FC = () => {
           </button>
 
           <p className="text-xs text-gray-500">
-            A confirmation email has been sent to {shippingInfo.email}
+            A confirmation email has been sent to <strong>{shippingInfo.email}</strong>
           </p>
         </div>
       </div>
@@ -200,6 +275,14 @@ const LantyCheckoutPage: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             <h2 className="text-3xl font-bold text-gray-900">Checkout</h2>
 
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
+
             {/* Shipping Information */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
@@ -210,31 +293,31 @@ const LantyCheckoutPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
-                  <input type="text" required value={shippingInfo.firstName} onChange={(e) => handleInputChange('firstName', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
+                  <input type="text" required value={shippingInfo.firstName} onChange={(e) => handleInputChange('firstName', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" placeholder="John" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Last Name *</label>
-                  <input type="text" required value={shippingInfo.lastName} onChange={(e) => handleInputChange('lastName', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
+                  <input type="text" required value={shippingInfo.lastName} onChange={(e) => handleInputChange('lastName', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" placeholder="Doe" />
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
-                  <input type="email" required value={shippingInfo.email} onChange={(e) => handleInputChange('email', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
+                  <input type="email" required value={shippingInfo.email} onChange={(e) => handleInputChange('email', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" placeholder="john@example.com" />
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-                  <input type="tel" required value={shippingInfo.phone} onChange={(e) => handleInputChange('phone', e.target.value)} placeholder="+254 7XX XXX XXX" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
+                  <input type="tel" required value={shippingInfo.phone} onChange={(e) => handleInputChange('phone', e.target.value)} placeholder="+254 712 345 678" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Address *</label>
-                  <input type="text" required value={shippingInfo.address} onChange={(e) => handleInputChange('address', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
+                  <input type="text" required value={shippingInfo.address} onChange={(e) => handleInputChange('address', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" placeholder="123 Main Street, Apt 4B" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">City *</label>
-                  <input type="text" required value={shippingInfo.city} onChange={(e) => handleInputChange('city', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
+                  <input type="text" required value={shippingInfo.city} onChange={(e) => handleInputChange('city', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" placeholder="Nairobi" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
-                  <input type="text" value={shippingInfo.postalCode} onChange={(e) => handleInputChange('postalCode', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
+                  <input type="text" value={shippingInfo.postalCode} onChange={(e) => handleInputChange('postalCode', e.target.value)} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" placeholder="00100" />
                 </div>
               </div>
             </div>
@@ -307,32 +390,11 @@ const LantyCheckoutPage: React.FC = () => {
                 </label>
               </div>
 
-              {paymentMethod === 'card' && (
-                <div className="mt-6 p-4 bg-gray-50 rounded-lg space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Card Number</label>
-                    <input type="text" placeholder="1234 5678 9012 3456" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
-                      <input type="text" placeholder="MM/YY" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">CVV</label>
-                      <input type="text" placeholder="123" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {paymentMethod === 'mpesa' && (
-                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">M-Pesa Phone Number</label>
-                  <input type="tel" placeholder="254 7XX XXX XXX" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent" />
-                  <p className="text-sm text-gray-600 mt-2">You will receive an STK push to complete payment.</p>
-                </div>
-              )}
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-700">
+                  💳 For demo purposes, all payment methods are simulated. Your order will be processed successfully.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -368,12 +430,12 @@ const LantyCheckoutPage: React.FC = () => {
                   <div className="space-y-2 text-sm mb-4">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Subtotal</span>
-                      <span className="font-medium">KSh {subtotal}</span>
+                      <span className="font-medium">KSh {subtotal.toLocaleString()}</span>
                     </div>
                     {promoDiscount > 0 && (
                       <div className="flex justify-between text-green-600">
                         <span>Discount (10%)</span>
-                        <span className="font-medium">-KSh {promoDiscount}</span>
+                        <span className="font-medium">-KSh {promoDiscount.toLocaleString()}</span>
                       </div>
                     )}
                     <div className="flex justify-between">
@@ -390,7 +452,7 @@ const LantyCheckoutPage: React.FC = () => {
                   </div>
 
                   <button onClick={completeOrder} disabled={isSubmitting} className="w-full bg-[#98a69e] text-white py-4 rounded-lg font-semibold hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
-                    <span>{isSubmitting ? 'Processing...' : 'Complete Order'}</span>
+                    <span>{isSubmitting ? 'Processing Order...' : 'Complete Order'}</span>
                     {!isSubmitting && <ChevronRight className="w-5 h-5" />}
                   </button>
 

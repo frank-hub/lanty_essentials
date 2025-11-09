@@ -63,21 +63,30 @@ class CheckoutController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'firstName' => 'required|string|max:255',
-            'lastName' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
-            'postalCode' => 'nullable|string|max:20',
-            'shippingMethod' => 'required|in:standard,express',
-            'paymentMethod' => 'required|in:card,mpesa,paypal',
-            'cardNumber' => 'nullable|string',
-            'cardExpiry' => 'nullable|string',
-            'cardCvv' => 'nullable|string',
-            'mpesaPhone' => 'nullable|string',
-        ]);
+        // Return JSON for AJAX requests
+        if (!$request->expectsJson() && $request->isJson()) {
+            $request->headers->set('Accept', 'application/json');
+        }
+
+        try {
+            $validated = $request->validate([
+                'firstName' => 'required|string|max:255',
+                'lastName' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'phone' => 'required|string|max:20',
+                'address' => 'required|string|max:255',
+                'city' => 'required|string|max:100',
+                'postalCode' => 'nullable|string|max:20',
+                'shippingMethod' => 'required|in:standard,express',
+                'paymentMethod' => 'required|in:card,mpesa,paypal',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => 'Validation failed',
+                'message' => $e->getMessage(),
+                'errors' => $e->errors()
+            ], 422);
+        }
 
         $identifier = $this->getCartIdentifier();
 
@@ -86,7 +95,7 @@ class CheckoutController extends Controller
             ->get();
 
         if ($cartItems->isEmpty()) {
-            return back()->with('error', 'Your cart is empty.');
+            return response()->json(['error' => 'Your cart is empty.'], 400);
         }
 
         // Calculate totals
@@ -98,7 +107,7 @@ class CheckoutController extends Controller
         // Verify stock availability
         foreach ($cartItems as $item) {
             if ($item->product->stock < $item->quantity) {
-                return back()->with('error', "Insufficient stock for {$item->product->name}");
+                return response()->json(['error' => "Insufficient stock for {$item->product->name}"], 400);
             }
         }
 
@@ -122,7 +131,7 @@ class CheckoutController extends Controller
             $order = Order::create([
                 'id' => (string) Str::uuid(),
                 'customer_id' => $customer->id,
-                'order_amount' => $subtotal,
+                'amount' => $subtotal,
                 'shipping_address' => $validated['address'] . ', ' . $validated['city'],
                 'order_address' => $validated['address'],
                 'order_email' => $validated['email'],
@@ -162,7 +171,7 @@ class CheckoutController extends Controller
             if (!$paymentStatus) {
                 DB::rollBack();
                 $order->update(['order_status' => 'payment_failed']);
-                return back()->with('error', 'Payment processing failed. Please try again.');
+                return response()->json(['error' => 'Payment processing failed. Please try again.'], 400);
             }
 
             // Update order status to processing
@@ -176,14 +185,26 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            return redirect("/checkout/success/{$order->id}")
-                ->with('success', 'Order placed successfully!')
-                ->with('order', $order);
+            return response()->json([
+                'success' => true,
+                'message' => 'Order placed successfully!',
+                'order_id' => $order->id,
+            ], 201);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Checkout error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            return back()->with('error', 'An error occurred while processing your order. Please try again.');
+            $errorMsg = $e->getMessage();
+            \Log::error('Checkout error: ' . $errorMsg, [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            return response()->json([
+                'error' => 'An error occurred while processing your order',
+                'message' => config('app.debug') ? $errorMsg : 'Please try again or contact support.',
+                'debug' => config('app.debug') ? $errorMsg : null,
+            ], 500);
         }
     }
 
@@ -391,30 +412,30 @@ class CheckoutController extends Controller
     /**
      * Apply promo code
      */
-    // public function applyPromo(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'code' => 'required|string',
-    //     ]);
+    public function applyPromo(Request $request)
+    {
+        // $validated = $request->validate([
+        //     'code' => 'required|string',
+        // ]);
 
-    //     // Check if promo code is valid
-    //     $promoCode = \App\Models\PromoCode::where('code', strtoupper($validated['code']))
-    //         ->where('is_active', true)
-    //         ->first();
+        // // Check if promo code is valid
+        // $promoCode = \App\Models\PromoCode::where('code', strtoupper($validated['code']))
+        //     ->where('is_active', true)
+        //     ->first();
 
-    //     if (!$promoCode) {
-    //         return response()->json(['error' => 'Invalid promo code'], 400);
-    //     }
+        // if (!$promoCode) {
+        //     return response()->json(['error' => 'Invalid promo code'], 400);
+        // }
 
-    //     if ($promoCode->expired_at && $promoCode->expired_at < now()) {
-    //         return response()->json(['error' => 'Promo code has expired'], 400);
-    //     }
+        // if ($promoCode->expired_at && $promoCode->expired_at < now()) {
+        //     return response()->json(['error' => 'Promo code has expired'], 400);
+        // }
 
-    //     return response()->json([
-    //         'discount_percent' => $promoCode->discount_percent,
-    //         'message' => 'Promo code applied successfully',
-    //     ]);
-    // }
+        // return response()->json([
+        //     'discount_percent' => $promoCode->discount_percent,
+        //     'message' => 'Promo code applied successfully',
+        // ]);
+    }
 
     /**
      * M-Pesa callback handler
