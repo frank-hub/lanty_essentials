@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -25,12 +26,11 @@ Route::get('category',function(){
 
 Route::get('product_details/{id}',[WelcomeController::class, 'show'])->name('product_details');
 
-Route::get('cart',function(){
-    return Inertia::render('cart');
-});
-Route::get('checkout',function(){
-    return Inertia::render('checkout');
-});
+
+Route::get('checkout',[CheckoutController::class, 'index'])->name('checkout');
+Route::post('/checkout', [CheckoutController::class, 'store']);
+Route::get('/checkout', [CheckoutController::class, 'index']);
+Route::get('/checkout/success/{orderId}', [CheckoutController::class, 'success']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
 

@@ -38,15 +38,17 @@ class CartController extends Controller
             ->where($identifier)
             ->get();
 
-        $subtotal = $cartItems->sum('subtotal');
+        $subtotal = (float)$cartItems->sum(fn($item) => $item->price * $item->quantity);
         $shipping = $subtotal >= 5000 ? 0 : 500;
         $total = $subtotal + $shipping;
 
-        return Inertia::render('Cart/Index', [
+        // return response()->json(['cartItems' => $cartItems, 'subtotal' => $subtotal, 'shipping' => $shipping, 'total' => $total]);
+
+        return Inertia::render('cart/index', [
             'cartItems' => $cartItems,
-            'subtotal' => $subtotal,
-            'shipping' => $shipping,
-            'total' => $total,
+            'subtotal' => (int) $subtotal,
+            'shipping' => (int) $shipping,
+            'total' => (int) $total,
         ]);
     }
 
