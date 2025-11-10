@@ -24,14 +24,15 @@ import {
   Mail,
   Printer,
   FileText,
-  ShoppingBag,
-  ShoppingBasketIcon
+  ShoppingBasketIcon,
+  Loader
 } from 'lucide-react';
 
 interface Order {
   id: string;
   name: string;
   customer_id: string;
+  order_amount: number;
   amount: number;
   order_email: string;
   order_address: string;
@@ -57,170 +58,28 @@ interface PageProps {
   orders: Order[];
 }
 
-// const data: PageProps = {
-//   orders: [
-//     {
-//       id: 'ORD-1001',
-//       customer_id: 'CUST-001',
-//       order_amount: 149.99,
-//       order_email: 'john.doe@example.com',
-//       order_address: '12 Greenfield Lane, Manchester, UK',
-//       shipping_address: '12 Greenfield Lane, Manchester, UK',
-//       order_date: '2025-11-05T10:30:00Z',
-//       order_status: 'completed',
-//       details: [
-//         {
-//           id: 'DET-101',
-//           product_id: 'PROD-100',
-//           quantity: 2,
-//           price: 49.99,
-//           sku: 'SKU-XL-BLACK-TSHIRT'
-//         },
-//         {
-//           id: 'DET-102',
-//           product_id: 'PROD-101',
-//           quantity: 1,
-//           price: 49.99,
-//           sku: 'SKU-SHOES-42'
-//         }
-//       ],
-//       customer: {
-//         id: 'CUST-001',
-//         full_name: 'John Doe',
-//         email: 'john.doe@example.com',
-//         phone: '+44 7123 456789'
-//       }
-//     },
-//     {
-//       id: 'ORD-1002',
-//       customer_id: 'CUST-002',
-//       order_amount: 89.5,
-//       order_email: 'mary.jane@example.com',
-//       order_address: '22 Queen Street, London, UK',
-//       shipping_address: '45 Baker Street, London, UK',
-//       order_date: '2025-11-07T14:15:00Z',
-//       order_status: 'processing',
-//       details: [
-//         {
-//           id: 'DET-201',
-//           product_id: 'PROD-110',
-//           quantity: 1,
-//           price: 59.5,
-//           sku: 'SKU-PHONECASE-11'
-//         },
-//         {
-//           id: 'DET-202',
-//           product_id: 'PROD-120',
-//           quantity: 2,
-//           price: 15,
-//           sku: 'SKU-USB-CABLE'
-//         }
-//       ],
-//       customer: {
-//         id: 'CUST-002',
-//         full_name: 'Mary Jane',
-//         email: 'mary.jane@example.com',
-//         phone: '+44 7890 123456'
-//       }
-//     },
-//     {
-//       id: 'ORD-1003',
-//       customer_id: 'CUST-003',
-//       order_amount: 250.0,
-//       order_email: 'samuel.kip@example.com',
-//       order_address: 'Nairobi West, Nairobi, Kenya',
-//       shipping_address: 'Nairobi West, Nairobi, Kenya',
-//       order_date: '2025-11-08T09:45:00Z',
-//       order_status: 'pending',
-//       details: [
-//         {
-//           id: 'DET-301',
-//           product_id: 'PROD-200',
-//           quantity: 1,
-//           price: 250.0,
-//           sku: 'SKU-LAPTOP-BAG-PRO'
-//         }
-//       ],
-//       customer: {
-//         id: 'CUST-003',
-//         full_name: 'Samuel Kip',
-//         email: 'samuel.kip@example.com',
-//         phone: '+254 712 345678'
-//       }
-//     },
-//     {
-//       id: 'ORD-1004',
-//       customer_id: 'CUST-004',
-//       order_amount: 320.75,
-//       order_email: 'lucy.wangari@example.com',
-//       order_address: 'Westlands, Nairobi, Kenya',
-//       shipping_address: 'Westlands, Nairobi, Kenya',
-//       order_date: '2025-11-09T11:00:00Z',
-//       order_status: 'payment_failed',
-//       details: [
-//         {
-//           id: 'DET-401',
-//           product_id: 'PROD-305',
-//           quantity: 1,
-//           price: 320.75,
-//           sku: 'SKU-SMARTWATCH-ULTRA'
-//         }
-//       ],
-//       customer: {
-//         id: 'CUST-004',
-//         full_name: 'Lucy Wangari',
-//         email: 'lucy.wangari@example.com',
-//         phone: '+254 798 234567'
-//       }
-//     },
-//     {
-//       id: 'ORD-1005',
-//       customer_id: 'CUST-005',
-//       order_amount: 59.99,
-//       order_email: 'daniel.mutua@example.com',
-//       order_address: 'Mombasa Road, Mombasa, Kenya',
-//       shipping_address: 'Mombasa Road, Mombasa, Kenya',
-//       order_date: '2025-11-03T18:25:00Z',
-//       order_status: 'cancelled',
-//       details: [
-//         {
-//           id: 'DET-501',
-//           product_id: 'PROD-400',
-//           quantity: 3,
-//           price: 19.99,
-//           sku: 'SKU-HEADPHONES-BT'
-//         }
-//       ],
-//       customer: {
-//         id: 'CUST-005',
-//         full_name: 'Daniel Mutua',
-//         email: 'daniel.mutua@example.com',
-//         phone: '+254 701 987654'
-//       }
-//     }
-//   ]
-// };
-
-
-
 const LantyOrdersDashboard: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [filterStatus, setFilterStatus] = useState('all');
-  const [filterDate, setFilterDate] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [loadingOrderId, setLoadingOrderId] = useState<string | null>(null);
+  const [ordersData, setOrdersData] = useState<Order[]>([]);
+  const [statusDropdownOpen, setStatusDropdownOpen] = useState<string | null>(null);
 
-//   const [orders, setOrders] = useState<Order[]>(data.orders);
-const { orders } = usePage<PageProps>().props;
+  const { orders = [] } = usePage<PageProps>().props;
 
+  React.useEffect(() => {
+    setOrdersData(orders);
+  }, [orders]);
 
   const statuses = ['pending', 'processing', 'completed', 'cancelled', 'payment_failed'];
 
-  const filteredOrders = orders.filter(order => {
+  const filteredOrders = ordersData.filter(order => {
     const matchesSearch =
-      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(order.id).toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customer.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.order_email.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -245,6 +104,46 @@ const { orders } = usePage<PageProps>().props;
     }
   };
 
+  const handleStatusUpdate = async (orderId: string, newStatus: string) => {
+    setLoadingOrderId(orderId);
+    setStatusDropdownOpen(null);
+
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+      const response = await fetch(`/admin/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken || '',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          status: newStatus,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || data.error || 'Failed to update order status');
+        return;
+      }
+
+      setOrdersData(prevOrders =>
+        prevOrders.map(order =>
+          order.id === orderId
+            ? { ...order, order_status: newStatus as any }
+            : order
+        )
+      );
+    } catch (error) {
+      alert('Failed to update order status. Please try again.');
+    } finally {
+      setLoadingOrderId(null);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', icon: Clock },
@@ -259,7 +158,7 @@ const { orders } = usePage<PageProps>().props;
   const getTotalRevenue = () => {
     return filteredOrders
       .filter(o => o.order_status === 'completed')
-      .reduce((sum, o) => sum + o.order_amount, 0);
+      .reduce((sum, o) => sum + (o.order_amount || o.amount || 0), 0);
   };
 
   const formatDate = (date: string) => {
@@ -312,7 +211,7 @@ const { orders } = usePage<PageProps>().props;
                 <Package className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
+                <p className="text-2xl font-bold text-gray-900">{ordersData.length}</p>
                 <p className="text-sm text-gray-600">Total Orders</p>
               </div>
             </div>
@@ -324,7 +223,7 @@ const { orders } = usePage<PageProps>().props;
                 <CheckCircle className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{orders.filter(o => o.order_status === 'completed').length}</p>
+                <p className="text-2xl font-bold text-gray-900">{ordersData.filter(o => o.order_status === 'completed').length}</p>
                 <p className="text-sm text-gray-600">Completed</p>
               </div>
             </div>
@@ -336,7 +235,7 @@ const { orders } = usePage<PageProps>().props;
                 <Clock className="w-5 h-5 text-yellow-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{orders.filter(o => o.order_status === 'pending' || o.order_status === 'processing').length}</p>
+                <p className="text-2xl font-bold text-gray-900">{ordersData.filter(o => o.order_status === 'pending' || o.order_status === 'processing').length}</p>
                 <p className="text-sm text-gray-600">In Progress</p>
               </div>
             </div>
@@ -348,7 +247,7 @@ const { orders } = usePage<PageProps>().props;
                 <AlertTriangle className="w-5 h-5 text-red-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{orders.filter(o => o.order_status === 'cancelled' || o.order_status === 'payment_failed').length}</p>
+                <p className="text-2xl font-bold text-gray-900">{ordersData.filter(o => o.order_status === 'cancelled' || o.order_status === 'payment_failed').length}</p>
                 <p className="text-sm text-gray-600">Failed/Cancelled</p>
               </div>
             </div>
@@ -486,7 +385,7 @@ const { orders } = usePage<PageProps>().props;
                         <div className="ml-6 grid grid-cols-12 gap-4 w-full items-center">
                           {/* Order ID */}
                           <div className="col-span-2">
-                            <p className="font-medium text-gray-900 font-mono text-sm">ORD-{order.id.substring(0, 8)}</p>
+                            <p className="font-medium text-gray-900 font-mono text-sm">ORD-{String(order.id).substring(0, 8)}</p>
                           </div>
 
                           {/* Customer */}
@@ -497,7 +396,7 @@ const { orders } = usePage<PageProps>().props;
 
                           {/* Amount */}
                           <div className="col-span-2">
-                            <span className="font-semibold text-gray-900">KSh {order.amount}</span>
+                            <span className="font-semibold text-gray-900">KSh {(order.order_amount || order.amount || 0).toLocaleString()}</span>
                           </div>
 
                           {/* Date */}
@@ -507,13 +406,42 @@ const { orders } = usePage<PageProps>().props;
                           </div>
 
                           {/* Status */}
-                          <div className="col-span-2">
-                            <div className="flex items-center space-x-1">
-                              <StatusIcon className="w-4 h-4 text-gray-600" />
-                              <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${statusBadge.bg} ${statusBadge.text}`}>
-                                {order.order_status.replace('_', ' ')}
-                              </span>
-                            </div>
+                          <div className="col-span-2 relative">
+                            <button
+                              onClick={() => setStatusDropdownOpen(statusDropdownOpen === order.id ? null : order.id)}
+                              disabled={loadingOrderId === order.id}
+                              className="flex items-center space-x-1 px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors disabled:opacity-50 w-full justify-between"
+                            >
+                              <div className="flex items-center space-x-1">
+                                {loadingOrderId === order.id ? (
+                                  <Loader className="w-4 h-4 text-[#98a69e] animate-spin" />
+                                ) : (
+                                  <StatusIcon className="w-4 h-4 text-gray-600" />
+                                )}
+                                <span className={`text-xs rounded-full font-medium ${statusBadge.bg} ${statusBadge.text} px-2 py-1`}>
+                                  {order.order_status.replace('_', ' ')}
+                                </span>
+                              </div>
+                              <ChevronDown className={`w-4 h-4 transition-transform ${statusDropdownOpen === order.id ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            {/* Status Dropdown */}
+                            {statusDropdownOpen === order.id && (
+                              <div className="absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[180px]">
+                                {statuses.map(status => (
+                                  <button
+                                    key={status}
+                                    onClick={() => handleStatusUpdate(order.id, status)}
+                                    disabled={loadingOrderId === order.id || status === order.order_status}
+                                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed first:rounded-t-lg last:rounded-b-lg ${
+                                      status === order.order_status ? 'bg-blue-50 font-semibold text-[#98a69e]' : ''
+                                    }`}
+                                  >
+                                    {status.replace('_', ' ')}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
                           </div>
 
                           {/* Actions */}
@@ -565,15 +493,7 @@ const { orders } = usePage<PageProps>().props;
 
                           {/* Shipping Info */}
                           <div>
-                            <h4 className="font-semibold text-gray-900 ">Product Details</h4>
-                            <div className="flex items-start space-x-2 text-sm">
-                            <ShoppingBasketIcon className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
-                              <div>
-                                <p className="text-gray-700">{order.name}</p>
-                              </div>
-                            </div>
-
-                            <h4 className="font-semibold text-gray-900 mb-3 mt-3">Shipping Address</h4>
+                            <h4 className="font-semibold text-gray-900 mb-3">Shipping Address</h4>
                             <div className="flex items-start space-x-2 text-sm">
                               <MapPin className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
                               <div>
@@ -581,7 +501,6 @@ const { orders } = usePage<PageProps>().props;
                               </div>
                             </div>
                           </div>
-
                         </div>
 
                         {/* Order Items */}
@@ -630,13 +549,42 @@ const { orders } = usePage<PageProps>().props;
                     <div className="flex items-start justify-between mb-2">
                       <div>
                         <p className="text-xs text-gray-500 uppercase tracking-wide">Order ID</p>
-                        <p className="font-mono text-sm font-semibold text-gray-900">{order.id.substring(0, 12)}...</p>
+                        <p className="font-mono text-sm font-semibold text-gray-900">ORD-{String(order.id).substring(0, 8)}</p>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <StatusIcon className="w-4 h-4 text-gray-600" />
-                        <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${statusBadge.bg} ${statusBadge.text}`}>
-                          {order.order_status.replace('_', ' ')}
-                        </span>
+                      <div className="relative">
+                        <button
+                          onClick={() => setStatusDropdownOpen(statusDropdownOpen === order.id ? null : order.id)}
+                          disabled={loadingOrderId === order.id}
+                          className="flex items-center space-x-1 px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                        >
+                          {loadingOrderId === order.id ? (
+                            <Loader className="w-4 h-4 text-[#98a69e] animate-spin" />
+                          ) : (
+                            <StatusIcon className="w-4 h-4 text-gray-600" />
+                          )}
+                          <span className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${statusBadge.bg} ${statusBadge.text}`}>
+                            {order.order_status.replace('_', ' ')}
+                          </span>
+                          <ChevronDown className={`w-3 h-3 transition-transform ${statusDropdownOpen === order.id ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {/* Status Dropdown */}
+                        {statusDropdownOpen === order.id && (
+                          <div className="absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[160px]">
+                            {statuses.map(status => (
+                              <button
+                                key={status}
+                                onClick={() => handleStatusUpdate(order.id, status)}
+                                disabled={loadingOrderId === order.id || status === order.order_status}
+                                className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed first:rounded-t-lg last:rounded-b-lg ${
+                                  status === order.order_status ? 'bg-blue-50 font-semibold text-[#98a69e]' : ''
+                                }`}
+                              >
+                                {status.replace('_', ' ')}
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -651,7 +599,7 @@ const { orders } = usePage<PageProps>().props;
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
                         <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Amount</p>
-                        <p className="text-xl font-bold text-gray-900">KSh {order.order_amount.toLocaleString()}</p>
+                        <p className="text-xl font-bold text-gray-900">KSh {(order.order_amount || order.amount || 0).toLocaleString()}</p>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Items</p>
@@ -701,7 +649,7 @@ const { orders } = usePage<PageProps>().props;
           <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 px-6 py-4">
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-600">
-                Showing {filteredOrders.length} of {orders.length} orders
+                Showing {filteredOrders.length} of {ordersData.length} orders
               </p>
               <div className="flex items-center space-x-2">
                 <button className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">

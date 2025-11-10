@@ -24,7 +24,7 @@ class OrderController extends Controller
                 return [
                     'id' => (string) $order->id,
                     'customer_id' => $order->customer_id,
-                    'amount' => $order->amount,
+                    'amount' =>(float) $order->amount,
                     'name' => $order->name,
                     'order_email' => $order->order_email,
                     'order_address' => $order->order_address,

@@ -35,7 +35,7 @@ Route::get('/checkout', [CheckoutController::class, 'index']);
 Route::get('/checkout/success/{orderId}', [CheckoutController::class, 'success']);
 
 Route::get('orders',[OrderController::class, 'index'])->name('orders')  ;
-
+Route::put('admin/orders/{orderId}/status',[OrderController::class, 'updateStatus'])->name('updateStatus');
 
 Route::prefix('admin/customers')->group(function () {
     Route::get('/', [CustomerController::class, 'index']);
