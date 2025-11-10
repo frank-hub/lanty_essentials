@@ -32,9 +32,9 @@ Route::post('/checkout', [CheckoutController::class, 'store']);
 Route::get('/checkout', [CheckoutController::class, 'index']);
 Route::get('/checkout/success/{orderId}', [CheckoutController::class, 'success']);
 
-Route::get('oreders',function(){
-    return Inertia::render('orders');
-})->name('orders');
+Route::get('orders',function(){
+    return Inertia::render('admin/orders');
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
 

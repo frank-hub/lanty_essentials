@@ -198,7 +198,7 @@ const data: PageProps = {
   ]
 };
 
-export default data;
+
 
 const LantyOrdersDashboard: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
@@ -209,7 +209,8 @@ const LantyOrdersDashboard: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
-  const { orders = [] } = usePage<PageProps>().props;
+  const [orders, setOrders] = useState<Order[]>(data.orders);
+
 
   const statuses = ['pending', 'processing', 'completed', 'cancelled', 'payment_failed'];
 

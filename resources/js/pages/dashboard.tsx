@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Users, 
-  BarChart3, 
-  Settings, 
-  Tag, 
-  FileText, 
-  Bell, 
-  Search, 
-  Menu, 
-  X, 
-  TrendingUp, 
-  DollarSign, 
-  Package2, 
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  BarChart3,
+  Settings,
+  Tag,
+  FileText,
+  Bell,
+  Search,
+  Menu,
+  X,
+  TrendingUp,
+  DollarSign,
+  Package2,
   UserCheck,
   Eye,
   Calendar,
@@ -63,10 +63,10 @@ const LantyAdminDashboard: React.FC = () => {
       url:'',
       badge: '12',
       submenu: [
-        { id: 'all-orders', label: 'All Orders' , url: '/products'},
-        { id: 'pending-orders', label: 'Pending Orders', url: '/products' },
-        { id: 'completed-orders', label: 'Completed Orders', url: '/products' },
-        { id: 'refunds', label: 'Refunds' , url: '/products'}
+        { id: 'all-orders', label: 'All Orders' , url: '/orders'},
+        { id: 'pending-orders', label: 'Pending Orders', url: '/orders/pending' },
+        { id: 'completed-orders', label: 'Completed Orders', url: '/orders/completed' },
+        { id: 'refunds', label: 'Refunds' , url: '/orders/refunds'}
       ]
     },
     {
