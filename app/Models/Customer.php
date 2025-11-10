@@ -13,7 +13,19 @@ class Customer extends Model
 
     protected $hidden  = ['password'];
 
-    public function orders(){
-        return $this->hasMany(Order::class);
+    /**
+     * Relationship: Customer has many Orders
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'customer_id');
+    }
+
+    /**
+     * Relationship: Customer has many OrderDetails
+     */
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class, 'customer_id');
     }
 }

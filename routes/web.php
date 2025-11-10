@@ -6,6 +6,8 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CustomerController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -32,9 +34,27 @@ Route::post('/checkout', [CheckoutController::class, 'store']);
 Route::get('/checkout', [CheckoutController::class, 'index']);
 Route::get('/checkout/success/{orderId}', [CheckoutController::class, 'success']);
 
-Route::get('orders',function(){
-    return Inertia::render('admin/orders');
+Route::get('orders',[OrderController::class, 'index'])->name('orders')  ;
+
+
+Route::prefix('admin/customers')->group(function () {
+    Route::get('/', [CustomerController::class, 'index']);
+    Route::get('{customerId}', [CustomerController::class, 'show']);
+    Route::put('{customerId}', [CustomerController::class, 'update']);
+    Route::delete('{customerId}', [CustomerController::class, 'destroy']);
+
+    Route::post('filter', [CustomerController::class, 'filter']);
+    Route::get('statistics', [CustomerController::class, 'statistics']);
+    Route::post('export', [CustomerController::class, 'export']);
+    Route::post('{customerId}/send-email', [CustomerController::class, 'sendEmail']);
+    Route::get('{customerId}/tier', [CustomerController::class, 'getTier']);
+    Route::get('{customerId}/orders', [CustomerController::class, 'orderHistory']);
+    Route::post('bulk-update', [CustomerController::class, 'bulkUpdate']);
+    Route::post('report', [CustomerController::class, 'report']);
 });
+
+
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
 

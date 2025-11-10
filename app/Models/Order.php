@@ -11,11 +11,12 @@ class Order extends Model
         'order_address', 'order_email', 'order_date', 'order_status'
     ];
 
-    public function customers(){
-        return $this->belongsTo(Customer::class);
+    public function customers()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function orderDetails(){
-        return $this->hasMany(OrderDetail::class);
+        return $this->hasMany(OrderDetail::class, 'order_id');
     }
 }

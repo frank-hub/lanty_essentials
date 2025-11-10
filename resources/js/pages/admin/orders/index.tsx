@@ -23,13 +23,16 @@ import {
   Phone,
   Mail,
   Printer,
-  FileText
+  FileText,
+  ShoppingBag,
+  ShoppingBasketIcon
 } from 'lucide-react';
 
 interface Order {
   id: string;
+  name: string;
   customer_id: string;
-  order_amount: number;
+  amount: number;
   order_email: string;
   order_address: string;
   shipping_address: string;
@@ -50,153 +53,153 @@ interface Order {
   };
 }
 
-// interface PageProps {
-//   orders: Order[];
-// }
+interface PageProps {
+  orders: Order[];
+}
 
-const data: PageProps = {
-  orders: [
-    {
-      id: 'ORD-1001',
-      customer_id: 'CUST-001',
-      order_amount: 149.99,
-      order_email: 'john.doe@example.com',
-      order_address: '12 Greenfield Lane, Manchester, UK',
-      shipping_address: '12 Greenfield Lane, Manchester, UK',
-      order_date: '2025-11-05T10:30:00Z',
-      order_status: 'completed',
-      details: [
-        {
-          id: 'DET-101',
-          product_id: 'PROD-100',
-          quantity: 2,
-          price: 49.99,
-          sku: 'SKU-XL-BLACK-TSHIRT'
-        },
-        {
-          id: 'DET-102',
-          product_id: 'PROD-101',
-          quantity: 1,
-          price: 49.99,
-          sku: 'SKU-SHOES-42'
-        }
-      ],
-      customer: {
-        id: 'CUST-001',
-        full_name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '+44 7123 456789'
-      }
-    },
-    {
-      id: 'ORD-1002',
-      customer_id: 'CUST-002',
-      order_amount: 89.5,
-      order_email: 'mary.jane@example.com',
-      order_address: '22 Queen Street, London, UK',
-      shipping_address: '45 Baker Street, London, UK',
-      order_date: '2025-11-07T14:15:00Z',
-      order_status: 'processing',
-      details: [
-        {
-          id: 'DET-201',
-          product_id: 'PROD-110',
-          quantity: 1,
-          price: 59.5,
-          sku: 'SKU-PHONECASE-11'
-        },
-        {
-          id: 'DET-202',
-          product_id: 'PROD-120',
-          quantity: 2,
-          price: 15,
-          sku: 'SKU-USB-CABLE'
-        }
-      ],
-      customer: {
-        id: 'CUST-002',
-        full_name: 'Mary Jane',
-        email: 'mary.jane@example.com',
-        phone: '+44 7890 123456'
-      }
-    },
-    {
-      id: 'ORD-1003',
-      customer_id: 'CUST-003',
-      order_amount: 250.0,
-      order_email: 'samuel.kip@example.com',
-      order_address: 'Nairobi West, Nairobi, Kenya',
-      shipping_address: 'Nairobi West, Nairobi, Kenya',
-      order_date: '2025-11-08T09:45:00Z',
-      order_status: 'pending',
-      details: [
-        {
-          id: 'DET-301',
-          product_id: 'PROD-200',
-          quantity: 1,
-          price: 250.0,
-          sku: 'SKU-LAPTOP-BAG-PRO'
-        }
-      ],
-      customer: {
-        id: 'CUST-003',
-        full_name: 'Samuel Kip',
-        email: 'samuel.kip@example.com',
-        phone: '+254 712 345678'
-      }
-    },
-    {
-      id: 'ORD-1004',
-      customer_id: 'CUST-004',
-      order_amount: 320.75,
-      order_email: 'lucy.wangari@example.com',
-      order_address: 'Westlands, Nairobi, Kenya',
-      shipping_address: 'Westlands, Nairobi, Kenya',
-      order_date: '2025-11-09T11:00:00Z',
-      order_status: 'payment_failed',
-      details: [
-        {
-          id: 'DET-401',
-          product_id: 'PROD-305',
-          quantity: 1,
-          price: 320.75,
-          sku: 'SKU-SMARTWATCH-ULTRA'
-        }
-      ],
-      customer: {
-        id: 'CUST-004',
-        full_name: 'Lucy Wangari',
-        email: 'lucy.wangari@example.com',
-        phone: '+254 798 234567'
-      }
-    },
-    {
-      id: 'ORD-1005',
-      customer_id: 'CUST-005',
-      order_amount: 59.99,
-      order_email: 'daniel.mutua@example.com',
-      order_address: 'Mombasa Road, Mombasa, Kenya',
-      shipping_address: 'Mombasa Road, Mombasa, Kenya',
-      order_date: '2025-11-03T18:25:00Z',
-      order_status: 'cancelled',
-      details: [
-        {
-          id: 'DET-501',
-          product_id: 'PROD-400',
-          quantity: 3,
-          price: 19.99,
-          sku: 'SKU-HEADPHONES-BT'
-        }
-      ],
-      customer: {
-        id: 'CUST-005',
-        full_name: 'Daniel Mutua',
-        email: 'daniel.mutua@example.com',
-        phone: '+254 701 987654'
-      }
-    }
-  ]
-};
+// const data: PageProps = {
+//   orders: [
+//     {
+//       id: 'ORD-1001',
+//       customer_id: 'CUST-001',
+//       order_amount: 149.99,
+//       order_email: 'john.doe@example.com',
+//       order_address: '12 Greenfield Lane, Manchester, UK',
+//       shipping_address: '12 Greenfield Lane, Manchester, UK',
+//       order_date: '2025-11-05T10:30:00Z',
+//       order_status: 'completed',
+//       details: [
+//         {
+//           id: 'DET-101',
+//           product_id: 'PROD-100',
+//           quantity: 2,
+//           price: 49.99,
+//           sku: 'SKU-XL-BLACK-TSHIRT'
+//         },
+//         {
+//           id: 'DET-102',
+//           product_id: 'PROD-101',
+//           quantity: 1,
+//           price: 49.99,
+//           sku: 'SKU-SHOES-42'
+//         }
+//       ],
+//       customer: {
+//         id: 'CUST-001',
+//         full_name: 'John Doe',
+//         email: 'john.doe@example.com',
+//         phone: '+44 7123 456789'
+//       }
+//     },
+//     {
+//       id: 'ORD-1002',
+//       customer_id: 'CUST-002',
+//       order_amount: 89.5,
+//       order_email: 'mary.jane@example.com',
+//       order_address: '22 Queen Street, London, UK',
+//       shipping_address: '45 Baker Street, London, UK',
+//       order_date: '2025-11-07T14:15:00Z',
+//       order_status: 'processing',
+//       details: [
+//         {
+//           id: 'DET-201',
+//           product_id: 'PROD-110',
+//           quantity: 1,
+//           price: 59.5,
+//           sku: 'SKU-PHONECASE-11'
+//         },
+//         {
+//           id: 'DET-202',
+//           product_id: 'PROD-120',
+//           quantity: 2,
+//           price: 15,
+//           sku: 'SKU-USB-CABLE'
+//         }
+//       ],
+//       customer: {
+//         id: 'CUST-002',
+//         full_name: 'Mary Jane',
+//         email: 'mary.jane@example.com',
+//         phone: '+44 7890 123456'
+//       }
+//     },
+//     {
+//       id: 'ORD-1003',
+//       customer_id: 'CUST-003',
+//       order_amount: 250.0,
+//       order_email: 'samuel.kip@example.com',
+//       order_address: 'Nairobi West, Nairobi, Kenya',
+//       shipping_address: 'Nairobi West, Nairobi, Kenya',
+//       order_date: '2025-11-08T09:45:00Z',
+//       order_status: 'pending',
+//       details: [
+//         {
+//           id: 'DET-301',
+//           product_id: 'PROD-200',
+//           quantity: 1,
+//           price: 250.0,
+//           sku: 'SKU-LAPTOP-BAG-PRO'
+//         }
+//       ],
+//       customer: {
+//         id: 'CUST-003',
+//         full_name: 'Samuel Kip',
+//         email: 'samuel.kip@example.com',
+//         phone: '+254 712 345678'
+//       }
+//     },
+//     {
+//       id: 'ORD-1004',
+//       customer_id: 'CUST-004',
+//       order_amount: 320.75,
+//       order_email: 'lucy.wangari@example.com',
+//       order_address: 'Westlands, Nairobi, Kenya',
+//       shipping_address: 'Westlands, Nairobi, Kenya',
+//       order_date: '2025-11-09T11:00:00Z',
+//       order_status: 'payment_failed',
+//       details: [
+//         {
+//           id: 'DET-401',
+//           product_id: 'PROD-305',
+//           quantity: 1,
+//           price: 320.75,
+//           sku: 'SKU-SMARTWATCH-ULTRA'
+//         }
+//       ],
+//       customer: {
+//         id: 'CUST-004',
+//         full_name: 'Lucy Wangari',
+//         email: 'lucy.wangari@example.com',
+//         phone: '+254 798 234567'
+//       }
+//     },
+//     {
+//       id: 'ORD-1005',
+//       customer_id: 'CUST-005',
+//       order_amount: 59.99,
+//       order_email: 'daniel.mutua@example.com',
+//       order_address: 'Mombasa Road, Mombasa, Kenya',
+//       shipping_address: 'Mombasa Road, Mombasa, Kenya',
+//       order_date: '2025-11-03T18:25:00Z',
+//       order_status: 'cancelled',
+//       details: [
+//         {
+//           id: 'DET-501',
+//           product_id: 'PROD-400',
+//           quantity: 3,
+//           price: 19.99,
+//           sku: 'SKU-HEADPHONES-BT'
+//         }
+//       ],
+//       customer: {
+//         id: 'CUST-005',
+//         full_name: 'Daniel Mutua',
+//         email: 'daniel.mutua@example.com',
+//         phone: '+254 701 987654'
+//       }
+//     }
+//   ]
+// };
 
 
 
@@ -209,7 +212,8 @@ const LantyOrdersDashboard: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
-  const [orders, setOrders] = useState<Order[]>(data.orders);
+//   const [orders, setOrders] = useState<Order[]>(data.orders);
+const { orders } = usePage<PageProps>().props;
 
 
   const statuses = ['pending', 'processing', 'completed', 'cancelled', 'payment_failed'];
@@ -482,7 +486,7 @@ const LantyOrdersDashboard: React.FC = () => {
                         <div className="ml-6 grid grid-cols-12 gap-4 w-full items-center">
                           {/* Order ID */}
                           <div className="col-span-2">
-                            <p className="font-medium text-gray-900 font-mono text-sm">{order.id.substring(0, 8)}...</p>
+                            <p className="font-medium text-gray-900 font-mono text-sm">ORD-{order.id.substring(0, 8)}</p>
                           </div>
 
                           {/* Customer */}
@@ -493,7 +497,7 @@ const LantyOrdersDashboard: React.FC = () => {
 
                           {/* Amount */}
                           <div className="col-span-2">
-                            <span className="font-semibold text-gray-900">KSh {order.order_amount.toLocaleString()}</span>
+                            <span className="font-semibold text-gray-900">KSh {order.amount}</span>
                           </div>
 
                           {/* Date */}
@@ -561,7 +565,15 @@ const LantyOrdersDashboard: React.FC = () => {
 
                           {/* Shipping Info */}
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-3">Shipping Address</h4>
+                            <h4 className="font-semibold text-gray-900 ">Product Details</h4>
+                            <div className="flex items-start space-x-2 text-sm">
+                            <ShoppingBasketIcon className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <p className="text-gray-700">{order.name}</p>
+                              </div>
+                            </div>
+
+                            <h4 className="font-semibold text-gray-900 mb-3 mt-3">Shipping Address</h4>
                             <div className="flex items-start space-x-2 text-sm">
                               <MapPin className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
                               <div>
@@ -569,6 +581,7 @@ const LantyOrdersDashboard: React.FC = () => {
                               </div>
                             </div>
                           </div>
+
                         </div>
 
                         {/* Order Items */}

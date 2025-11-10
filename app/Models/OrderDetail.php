@@ -10,11 +10,16 @@ class OrderDetail extends Model
 
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id');
     }
 
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+        public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 }

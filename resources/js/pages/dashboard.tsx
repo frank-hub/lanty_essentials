@@ -73,7 +73,10 @@ const LantyAdminDashboard: React.FC = () => {
       id: 'customers',
       label: 'Customers',
       icon: Users,
-      url: '',
+      url: '/admin/customers',
+      submenu: [
+        { id: 'all-customers', label: 'All Customers' , url: '/admin/customers'},
+      ],
       badge: '1,234'
     },
     {
