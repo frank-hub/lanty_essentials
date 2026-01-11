@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Search, User, ShoppingCart, ChevronDown, Minus, Plus, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Minus, Plus, Share2 } from 'lucide-react';
 import { router, usePage } from '@inertiajs/react';
+import Layout from './layout';
 
 interface ProductImage {
   id: number;
@@ -118,7 +119,6 @@ const LantyProductDetail: React.FC = () => {
       preserveScroll: true,
       onSuccess: () => {
         setAddingToCart(false);
-        // Show success notification
         alert('Product added to cart successfully!');
       },
       onError: (errors) => {
@@ -146,69 +146,12 @@ const LantyProductDetail: React.FC = () => {
     });
   };
 
-  // Calculate discount percentage
   const discountPercentage = product.compare_price
     ? Math.round(((product.compare_price - product.price) / product.compare_price) * 100)
     : 0;
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Promotional Banner */}
-      <div className="bg-purple-100 py-3">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <ChevronLeft className="w-5 h-5 text-gray-600 cursor-pointer" />
-          <p className="text-sm text-gray-800 text-center">
-            Order in Kenya above KSh 5,000, can enjoy Free Shipping Service
-          </p>
-          <ChevronRight className="w-5 h-5 text-gray-600 cursor-pointer" />
-        </div>
-      </div>
-
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex-shrink-0">
-              <button onClick={() => router.visit('/')}>
-                <h1 className="text-2xl font-bold text-gray-900">LANTY</h1>
-              </button>
-            </div>
-
-            <nav className="hidden md:flex space-x-8">
-              <button onClick={() => router.visit('/products/category/sanitary-pads')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Sanitary Pads
-              </button>
-              <button onClick={() => router.visit('/products/category/laundry-detergents')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2 border-gray-900">
-                Laundry Detergents
-              </button>
-              <button onClick={() => router.visit('/products/category/laundry-pods')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Laundry Pods
-              </button>
-              <button onClick={() => router.visit('/products/category/combo')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Combo
-              </button>
-              <button onClick={() => router.visit('/products/category/skin-care')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Skin Care
-              </button>
-              <button onClick={() => router.visit('/products/category/home-cleaning')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Home Cleaning
-              </button>
-              <button onClick={() => router.visit('/faqs')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                FAQS
-              </button>
-              <button onClick={() => router.visit('/contact')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Contact Us
-              </button>
-            </nav>
-
-            <div className="flex items-center space-x-4">
-              <User className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" onClick={() => router.visit('/account')} />
-              <ShoppingCart className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" onClick={() => router.visit('/cart')} />
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <Layout>
       {/* Main Product Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -462,64 +405,7 @@ const LantyProductDetail: React.FC = () => {
           ))}
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-100 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-6">Customer Service</h4>
-              <ul className="space-y-4">
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">About Us</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Shipping Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Return Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Refund Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Privacy Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Terms of Conditions</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Payment Method</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-6">Shop</h4>
-              <ul className="space-y-4">
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">search</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Blogs</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">collections</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Talk to us</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-6">Get in touch</h4>
-              <div className="space-y-4">
-                <p className="text-gray-600">
-                  <span className="font-medium">Contact time:</span> Monday-Friday 9am-5pm EAT
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-medium">Email:</span> service@lanty.co.ke
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-medium">Company Address:</span> Nairobi, Kenya
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-12 pt-8 border-t border-gray-200 text-center">
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">Shop Now</h4>
-            <div className="max-w-md mx-auto flex">
-              <input
-                type="email"
-                placeholder="Email"
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              />
-              <button className="px-6 py-3 bg-gray-900 text-white rounded-r-md hover:bg-gray-800 transition-colors duration-200">
-                →
-              </button>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </Layout>
   );
 };
 

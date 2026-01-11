@@ -52,8 +52,8 @@ const LantyAdminDashboard: React.FC = () => {
       submenu: [
         { id: 'all-products', label: 'All Products', url: '/products' },
         { id: 'add-product', label: 'Add Product' , url: '/add_product'},
-        { id: 'categories', label: 'Categories', url: '/products' },
-        { id: 'inventory', label: 'Inventory', url: '/products' }
+        // { id: 'categories', label: 'Categories', url: '/products' },
+        { id: 'inventory', label: 'Inventory', url: '/inventory' }
       ]
     },
     {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Search, User, ShoppingCart, ChevronDown} from 'lucide-react';
 import { usePage , router ,Link} from '@inertiajs/react';
+import Layout from './layout';
 interface Product {
   id: string;
   sku: string;
@@ -17,6 +18,7 @@ interface Product {
 interface WelcomePageProps {
   products: Product[];
 }
+
 
 const LantyHomepage: React.FC = () => {
   const flashSaleProducts: Product[] = usePage<WelcomePageProps>().props.products;
@@ -41,52 +43,7 @@ const LantyHomepage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-gray-900">LANTY</h1>
-            </div>
-
-            {/* Navigation */}
-            <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Sanitary Pads
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2 border-gray-900">
-                Laundry Detergents
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Laundry Pods
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Combo
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Skin Care
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Home Cleaning
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                FAQS
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Contact Us
-              </a>
-            </nav>
-
-            {/* Right side */}
-            <div className="flex items-center space-x-4">
-              <User className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
-              <ShoppingCart className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
-            </div>
-          </div>
-        </div>
-      </header>
+    <Layout>
 
       {/* Hero Section */}
     <section className="relative w-full h-[90vh] flex items-center justify-center bg-gray-100">
@@ -461,70 +418,7 @@ const LantyHomepage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-100 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {/* Customer Service */}
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-6">Customer Service</h4>
-              <ul className="space-y-4">
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">About Us</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Shipping Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Return Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Refund Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Privacy Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Terms of Conditions</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Payment Method</a></li>
-              </ul>
-            </div>
-
-            {/* Shop */}
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-6">Shop</h4>
-              <ul className="space-y-4">
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">search</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Blogs</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">collections</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Talk to us</a></li>
-              </ul>
-            </div>
-
-            {/* Get in touch */}
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-6">Get in touch</h4>
-              <div className="space-y-4">
-                <p className="text-gray-600">
-                  <span className="font-small">Contact time:</span> Monday-Friday 9am-5pm AEST
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-small">Email:</span> service@Lanty.com.au
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-small">Company Address:</span> D7/11-15 Moxon Rd, Punchbowl NSW 2196 Australia
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Newsletter Signup */}
-          <div className="mt-12 pt-8 border-t border-gray-200 text-center">
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">Shop Now</h4>
-            <div className="max-w-md mx-auto flex">
-              <input
-                type="email"
-                placeholder="Email"
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-              />
-              <button className="px-6 py-3 bg-gray-900 text-white rounded-r-md hover:bg-gray-800 transition-colors duration-200">
-                →
-              </button>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </Layout>
   );
 };
 

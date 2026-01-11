@@ -8,6 +8,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InventoryController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -25,6 +26,8 @@ Route::prefix('cart')->name('cart.')->group(function () {
 Route::get('category',function(){
     return Inertia::render('category');
 })->name('category');
+
+Route::get('shop',[WelcomeController::class, 'shop'])->name('shop');
 
 Route::get('product_details/{id}',[WelcomeController::class, 'show'])->name('product_details');
 
@@ -70,6 +73,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::post('/add_product', [ProductsController::class, 'store'])->name('add_product');
+
+    Route::get('inventory',[InventoryController::class, 'index'])->name('inventory');
 
 });
 

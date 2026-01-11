@@ -167,7 +167,7 @@ const LantyAddProductPage: React.FC = () => {
   const handleSave = async (status: 'draft' | 'active') => {
     const updatedData = { ...productData, status };
     setProductData(updatedData);
-      console.log(updatedData)
+    console.log(updatedData)
 
     if (validateForm()) {
       // Here you would typically send data to your Laravel backend
@@ -177,9 +177,6 @@ const LantyAddProductPage: React.FC = () => {
         images,
         variants
       });
-      console.log(updatedData)
-      console.log('Server Responce: ', response.data);
-
       // Show success message or redirect
       alert(`Product ${status === 'draft' ? 'saved as draft' : 'published'} successfully!`);
       }catch (error: any){

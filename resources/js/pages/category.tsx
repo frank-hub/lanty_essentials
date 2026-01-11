@@ -21,7 +21,7 @@ const LantyCategoryPage: React.FC<CategoryPageProps> = ({
 }) => {
   const [filterBy, setFilterBy] = useState('Availability');
   const [sortBy, setSortBy] = useState('Featured');
-  
+
   const products: Product[] = [
     {
       id: '1',
@@ -91,7 +91,7 @@ const LantyCategoryPage: React.FC<CategoryPageProps> = ({
             </nav>
 
             {/* Right side */}
-            <div className="flex items-center space-x-4">              
+            <div className="flex items-center space-x-4">
               <User className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
               <ShoppingCart className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
             </div>
@@ -109,7 +109,7 @@ const LantyCategoryPage: React.FC<CategoryPageProps> = ({
               {categoryDescription}
             </p>
             <p className="text-gray-700 leading-relaxed">
-              We aim to elevate your laundry routine with LANTY's premium laundry detergent for sensitive skin. 
+              We aim to elevate your laundry routine with LANTY's premium laundry detergent for sensitive skin.
               Experience the power of the best laundry liquid formulated for allergies and eczema!
             </p>
           </div>
@@ -121,7 +121,7 @@ const LantyCategoryPage: React.FC<CategoryPageProps> = ({
           <div className="flex items-center space-x-4">
             <span className="text-sm font-medium text-gray-700">Filter:</span>
             <div className="relative">
-              <select 
+              <select
                 value={filterBy}
                 onChange={(e) => setFilterBy(e.target.value)}
                 className="appearance-none bg-white border border-gray-300 rounded-md px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent"
@@ -140,7 +140,7 @@ const LantyCategoryPage: React.FC<CategoryPageProps> = ({
             <div className="flex items-center space-x-4">
               <span className="text-sm font-medium text-gray-700">Sort by:</span>
               <div className="relative">
-                <select 
+                <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="appearance-none bg-white border border-gray-300 rounded-md px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#98a69e] focus:border-transparent"
@@ -175,7 +175,7 @@ const LantyCategoryPage: React.FC<CategoryPageProps> = ({
                   </span>
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <h3 className="text-sm font-small text-gray-900 group-hover:text-[#98a69e] line-clamp-2">
                   {product.name}
