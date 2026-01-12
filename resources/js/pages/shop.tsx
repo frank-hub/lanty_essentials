@@ -121,7 +121,7 @@ const ShopPage: React.FC = () => {
     setSearch('');
     setPriceRange('all');
     setSortBy('featured');
-    router.get('/products', {}, { preserveState: true });
+    router.get('/shop', {}, { preserveState: true });
   };
 
   const discountPercentage = (product: Product) => {

@@ -43,40 +43,28 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             <nav className="hidden md:flex space-x-8">
               <button
-                onClick={() => router.visit('/category')}
+                onClick={() => router.visit('/category/laundry')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
-                Sanitary Pads
+                Laundry Products
               </button>
               <button
-                onClick={() => router.visit('/products/category/laundry-detergents')}
+                onClick={() => router.visit('/category/washing_machine')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
-                Laundry Detergents
+                Washing Machines
               </button>
               <button
-                onClick={() => router.visit('/products/category/laundry-pods')}
+                onClick={() => router.visit('/category/glass_jar')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
-                Laundry Pods
+                Glass Jars
               </button>
               <button
-                onClick={() => router.visit('/products/category/combo')}
+                onClick={() => router.visit('/category/home')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
-                Combo
-              </button>
-              <button
-                onClick={() => router.visit('/products/category/skin-care')}
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-              >
-                Skin Care
-              </button>
-              <button
-                onClick={() => router.visit('/products/category/home-cleaning')}
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-              >
-                Home Cleaning
+                Lanty Home
               </button>
               <button
                 onClick={() => router.visit('/faqs')}

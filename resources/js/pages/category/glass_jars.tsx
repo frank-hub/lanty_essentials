@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, User, ShoppingCart, ChevronDown, Filter } from 'lucide-react';
+import Layout from '../layout';
 
 interface Product {
   id: string;
@@ -10,14 +11,14 @@ interface Product {
   onSale?: boolean;
 }
 
-interface CategoryPageProps {
-  categoryName?: string;
-  categoryDescription?: string;
+interface JarsPageProps {
+  JarsName?: string;
+  JarsDescription?: string;
 }
 
-const LantyCategoryPage: React.FC<CategoryPageProps> = ({
-  categoryName = "Laundry Detergent",
-  categoryDescription = "Lanty Laundry Detergents are made with non-irritating, mild, skin-friendly and plant-based ingredients. All washing liquid are origin in Australia which are eco-friendly.We make the ultimate balance between effect and health and make the hypoallergenic laundry detergent as gentle as possible to the body's skin while ensuring the cleaning effect."
+const LantyJarsPage: React.FC<JarsPageProps> = ({
+  JarsName = "Glass Jars",
+  JarsDescription = "...Some Text Here..."
 }) => {
   const [filterBy, setFilterBy] = useState('Availability');
   const [sortBy, setSortBy] = useState('Featured');
@@ -52,61 +53,15 @@ const LantyCategoryPage: React.FC<CategoryPageProps> = ({
   const productCount = products.length;
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-gray-900">LANTY</h1>
-            </div>
-
-            {/* Navigation */}
-            <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Sanitary Pads
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium border-b-2 border-gray-900">
-                Laundry Detergents
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Laundry Pods
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Combo
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Skin Care
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Home Cleaning
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                FAQS
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                Contact Us
-              </a>
-            </nav>
-
-            {/* Right side */}
-            <div className="flex items-center space-x-4">
-              <User className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
-              <ShoppingCart className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900" />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
+    <Layout>
+              {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Category Header */}
+        {/* Jars Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-6">{categoryName}</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-6">{JarsName}</h1>
           <div className="max-w-4xl">
             <p className="text-gray-700 leading-relaxed mb-4">
-              {categoryDescription}
+              {JarsDescription}
             </p>
             <p className="text-gray-700 leading-relaxed">
               We aim to elevate your laundry routine with LANTY's premium laundry detergent for sensitive skin.
@@ -203,71 +158,8 @@ const LantyCategoryPage: React.FC<CategoryPageProps> = ({
           </button>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-100 py-16 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {/* Customer Service */}
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-6">Customer Service</h4>
-              <ul className="space-y-4">
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">About Us</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Shipping Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Return Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Refund Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Privacy Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Terms of Conditions</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Payment Method</a></li>
-              </ul>
-            </div>
-
-            {/* Shop */}
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-6">Shop</h4>
-              <ul className="space-y-4">
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">search</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Blogs</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">collections</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Talk to us</a></li>
-              </ul>
-            </div>
-
-            {/* Get in touch */}
-            <div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-6">Get in touch</h4>
-              <div className="space-y-4">
-                <p className="text-gray-600">
-                  <span className="font-medium">Contact time:</span> Monday-Friday 9am-5pm EAT
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-medium">Email:</span> service@lanty.co.ke
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-medium">Company Address:</span> Nairobi, Kenya
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Newsletter Signup */}
-          <div className="mt-12 pt-8 border-t border-gray-200 text-center">
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">Shop Now</h4>
-            <div className="max-w-md mx-auto flex">
-              <input
-                type="email"
-                placeholder="Email"
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-[#98a69e]"
-              />
-              <button className="px-6 py-3 bg-gray-900 text-white rounded-r-md hover:bg-gray-800 transition-colors duration-200">
-                →
-              </button>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </Layout>
   );
 };
 
-export default LantyCategoryPage;
+export default LantyJarsPage;

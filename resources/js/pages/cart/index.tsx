@@ -140,7 +140,7 @@ const LantyCartPage: React.FC = () => {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Your cart is empty</h3>
                 <p className="text-gray-600 mb-6">Looks like you haven't added any items to your cart yet.</p>
                 <button
-                  onClick={() => router.visit('/products')}
+                  onClick={() => router.visit('/shop')}
                   className="bg-[#98a69e] text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors"
                 >
                   Continue Shopping

@@ -29,16 +29,10 @@ class WelcomeController extends Controller
             ->where($identifier)
             ->get();
         $categories = [
-            'Sanitary Pads',
-            'Toothpaste',
-            'Shampoo',
-            'Soap',
-            'Vitamins & Supplements',
-            'Baby Care',
-            'Feminine Hygiene',
-            'Oral Care',
-            'Hair Care',
-            'Skincare',
+            'Laundry Products',
+            'Washing Machines',
+            'Glass Jars',
+            'Lanty Home',
         ];
 
         $products = Products::with('images')->orderBy('created_at', 'desc')->get();
@@ -70,9 +64,16 @@ class WelcomeController extends Controller
 
     public function show($id){
         $product = Products::with('images')->findOrFail($id);
+        $identifier = $this->getCartIdentifier();
+
+        $cartItems = CartItem::with('product.images')
+            ->where($identifier)
+            ->get();
+
 
         return Inertia::render('product_details', [
-            'product' => $product
+            'product' => $product,
+            'cartItems' => $cartItems
         ]);
     }
 }

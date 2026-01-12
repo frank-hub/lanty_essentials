@@ -9,6 +9,8 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\CategoryController;
+
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -23,9 +25,12 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::get('/count', [CartController::class, 'count'])->name('count');
 });
 
-Route::get('category',function(){
-    return Inertia::render('category');
-})->name('category');
+Route::prefix('category')->group(function () {
+    Route::get('/laundry', [CategoryController::class, 'laundry'])->name('category.laundry');
+    Route::get('/glass_jar', [CategoryController::class, 'glass_jar'])->name('category.glass_jar');
+    Route::get('/home', [CategoryController::class, 'home'])->name('category.home');
+    Route::get('/washing_machine', [CategoryController::class, 'washing_machine'])->name('category.washing_machine');
+});
 
 Route::get('shop',[WelcomeController::class, 'shop'])->name('shop');
 
