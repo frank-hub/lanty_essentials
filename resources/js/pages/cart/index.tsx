@@ -337,7 +337,7 @@ const LantyCartPage: React.FC = () => {
             {/* Continue Shopping */}
             <div className="text-center">
               <button
-                onClick={() => router.visit('/products')}
+                onClick={() => router.visit('/shop')}
                 className="text-gray-600 hover:text-gray-900 underline"
               >
                 ← Continue Shopping

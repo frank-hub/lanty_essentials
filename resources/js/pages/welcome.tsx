@@ -1,16 +1,25 @@
-import React from 'react';
-import { Search, User, ShoppingCart, ChevronDown} from 'lucide-react';
+
+import React, { useState } from 'react';
+import { Plus,Search, User, ShoppingCart, ChevronDown} from 'lucide-react';
 import { usePage , router ,Link} from '@inertiajs/react';
 import Layout from './layout';
+
+interface ProductImage {
+  id: number;
+  image_path: string;
+  is_primary: boolean;
+}
+
 interface Product {
-  id: string;
+  id: number;
   sku: string;
   name: string;
   category: string;
+  compare_price?: number;
   price: number;
   stock: number;
   status: 'active' | 'inactive' | 'draft';
-  images: { id: string; image_path: string }[];
+   images: ProductImage[];
   createdAt: string;
   sales: number;
 }
@@ -20,8 +29,35 @@ interface WelcomePageProps {
 }
 
 
+
 const LantyHomepage: React.FC = () => {
   const flashSaleProducts: Product[] = usePage<WelcomePageProps>().props.products;
+  const [addingToCart, setAddingToCart] = useState<number | null>(null);
+
+    const discountPercentage = (product: Product) => {
+    if (!product.compare_price) return 0;
+    return Math.round(((product.compare_price - product.price) / product.compare_price) * 100);
+  };
+  const handleAddToCart = (product: Product) => {
+    setAddingToCart(product.id);
+
+    router.post('/cart/add', {
+      product_id: product.id,
+      quantity: 1,
+      price: product.price
+    }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        setAddingToCart(null);
+      },
+      onError: (errors) => {
+        setAddingToCart(null);
+        console.error('Error adding to cart:', errors);
+        alert('Failed to add product to cart');
+      }
+    });
+  };
+
 
   const categories = [
     {
@@ -120,39 +156,91 @@ const LantyHomepage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold text-gray-900 mb-12">Flash sale</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
-            {flashSaleProducts.map((product) => (
-              <Link href={`/product_details/${product.id}`} key={product.id}>
-              <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition">
-                <div className="relative">
-                  <img
-                    src={product.images[0]?.image_path}
-                    alt={product.name}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  {product.category && (
-                    <span className="absolute top-3 left-3 bg-black text-white px-2 py-1 text-sm font-small rounded">
-                      Sale
-                    </span>
-                  )}
-                </div>
-                <div className="p-4">
-                  <h4 className="text-sm font-small text-gray-900 mb-2 line-clamp-2 min-h-[2.5rem]">
-                    {product.name}
-                  </h4>
-                  <div className="flex items-center justify-between space-x-2">
-                    {product.category && (
-                      <span className="text-sm text-gray-500">
-                        {product.category}
-                      </span>
-                    )}
-                    <span className="text-sm font-medium text-gray-900">
-                      {product.price}
-                    </span>
-                  </div>
-                </div>
-              </div>
-                </Link>
-            ))}
+            {flashSaleProducts.map((product) => {
+                const primaryImage = product.images.find((img) => img.is_primary) || product.images[0];
+                const discount = discountPercentage(product);
+                return (
+                <div
+                        key={product.id}
+                        className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow group"
+                      >
+                        <div className="relative aspect-square bg-gray-100">
+                          <img
+                            src={primaryImage ? `/${primaryImage.image_path}` : '/placeholder.jpg'}
+                            alt={product.name}
+                            className="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300"
+                            onClick={() => router.visit(`/products/${product.id}`)}
+                          />
+                          {discount > 0 && (
+                            <span className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 text-xs font-semibold rounded">
+                              -{discount}%
+                            </span>
+                          )}
+                          {product.stock === 0 && (
+                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                              <span className="bg-white text-gray-900 px-4 py-2 rounded-lg font-semibold">
+                                Out of Stock
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Quick Add Button */}
+                          <button
+                            onClick={() => handleAddToCart(product)}
+                            disabled={product.stock === 0 || addingToCart === product.id}
+                            className="absolute bottom-3 right-3 bg-[#98a69e] text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition-all transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {addingToCart === product.id ? (
+                              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <Plus className="w-5 h-5" />
+                            )}
+                          </button>
+                        </div>
+
+                        <div className="p-4">
+                          <h3
+                            className="font-semibold text-gray-900 mb-2 line-clamp-2 cursor-pointer hover:text-[#98a69e] transition-colors"
+                            onClick={() => router.visit(`/products/${product.id}`)}
+                          >
+                            {product.name}
+                          </h3>
+
+                          <p className="text-xs text-gray-500 mb-2">SKU: {product.sku}</p>
+
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              {product.compare_price && (
+                                <span className="text-sm text-gray-500 line-through">
+                                  KSh {product.compare_price.toLocaleString()}
+                                </span>
+                              )}
+                              <span className="text-lg font-bold text-gray-900">
+                                KSh {product.price.toLocaleString()}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="mt-3 flex items-center justify-between">
+                            <span
+                              className={`text-xs font-medium ${
+                                product.stock > 0 ? 'text-green-600' : 'text-red-600'
+                              }`}
+                            >
+                              {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                            </span>
+                            <button
+                              onClick={() => router.visit(`/product_details/${product.id}`)}
+                              key={product.id}
+                              className="text-sm text-[#98a69e] hover:text-gray-700 font-medium"
+                            >
+                              View Details →
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                );
+            })};
           </div>
           <div className="text-center mt-12">
             <button className="bg-black text-white px-8 py-3 font-small hover:bg-gray-800 transition-colors duration-200">
@@ -313,7 +401,7 @@ const LantyHomepage: React.FC = () => {
                   <line x1="1" y1="10" x2="23" y2="10"/>
                 </svg>
               </div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">PayPal Safe Payment</h4>
+              <h4 className="text-lg font-semibold text-gray-900 mb-2">Mpesa Safe Payment</h4>
             </div>
 
             <div className="text-center">
