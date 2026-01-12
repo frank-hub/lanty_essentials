@@ -63,7 +63,7 @@ const LantyHomepage: React.FC = () => {
           Browse our latest products
         </h1>
         <a
-          href="shop.index" // adjust route as per your Laravel routes
+          href="/shop"
           className="inline-block bg-white text-gray-900 px-6 py-3 rounded-lg font-small shadow hover:bg-gray-100 transition"
         >
           Shop all
@@ -108,9 +108,9 @@ const LantyHomepage: React.FC = () => {
           <h3 className="text-3xl md:text-4xl font-bold text-white mb-8">
             Our natural bio-based cleaning products, from laundry to kitchen, protect your home and the planet with every use
           </h3>
-          <button className="bg-transparent border-2 border-white text-white px-8 py-3 text-lg font-small hover:bg-white hover:text-gray-900 transition-colors duration-200">
+          <a href='/shop' className="bg-transparent border-2 border-white text-white px-8 py-3 text-lg font-small hover:bg-white hover:text-gray-900 transition-colors duration-200">
             Shop all
-          </button>
+          </a>
         </div>
       </section>
 
@@ -211,9 +211,9 @@ const LantyHomepage: React.FC = () => {
               <p className="text-lg font-semibold text-gray-900 mb-8">
                 DEAL20 to get 0% OFF
               </p>
-              <button className="bg-[#98a69e] text-white px-8 py-3 font-small hover:bg-gray-700 transition-colors duration-200">
+              <a href='/shop' className="bg-[#98a69e] text-white px-8 py-3 font-small hover:bg-gray-700 transition-colors duration-200">
                 Shop Now
-              </button>
+              </a>
             </div>
 
             {/* Product Image */}
@@ -289,11 +289,11 @@ const LantyHomepage: React.FC = () => {
               for an 8x cleaner, fresher load with long-lasting fragrance every time.
             </p>
           <div className="flex justify-center">
-            <button
+            <a href='/shop'
               className="bt-small bg-gray-600 text-white w-24 py-2 text-sm font-medium hover:bg-gray-700 transition-colors duration-200"
             >
               Shop New
-            </button>
+            </a>
           </div>
 
 
