@@ -55,7 +55,7 @@ const LantyCheckoutPage: React.FC = () => {
 
   const promoDiscount = subtotal * 0.1;
   const shippingCost = shippingMethod === 'express' ? 1000 : (subtotal >= 5000 ? 0 : shipping);
-  const finalTotal = subtotal - promoDiscount + shippingCost;
+  const finalTotal = subtotal  + shippingCost;
 
   const handleInputChange = (field: keyof ShippingInfo, value: string) => {
     setShippingInfo(prev => ({
@@ -432,12 +432,7 @@ const LantyCheckoutPage: React.FC = () => {
                       <span className="text-gray-600">Subtotal</span>
                       <span className="font-medium">KSh {subtotal.toLocaleString()}</span>
                     </div>
-                    {promoDiscount > 0 && (
-                      <div className="flex justify-between text-green-600">
-                        <span>Discount (10%)</span>
-                        <span className="font-medium">-KSh {promoDiscount.toLocaleString()}</span>
-                      </div>
-                    )}
+
                     <div className="flex justify-between">
                       <span className="text-gray-600">Shipping</span>
                       <span className={`font-medium ${shippingCost === 0 ? 'text-green-600' : ''}`}>{shippingCost === 0 ? 'FREE' : `KSh ${shippingCost.toLocaleString()}`}</span>
@@ -464,15 +459,7 @@ const LantyCheckoutPage: React.FC = () => {
               )}
             </div>
 
-            {/* Special Offer */}
-            <div className="bg-gradient-to-r from-[#98a69e] to-green-400 rounded-xl p-6 text-white">
-              <div className="flex items-center space-x-3 mb-3">
-                <Gift className="w-6 h-6" />
-                <h3 className="font-semibold">Special Offer!</h3>
-              </div>
-              <p className="text-sm mb-4">Add any sanitary pad to your order and get 15% off your next purchase!</p>
-              <button onClick={() => router.visit('/products/category/sanitary-pads')} className="bg-white text-[#98a69e] px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-50 transition-colors">Browse Sanitary Pads</button>
-            </div>
+            
 
             <button onClick={() => router.visit('/cart')} className="w-full text-center text-gray-600 hover:text-gray-900 py-2 transition-colors flex items-center justify-center space-x-1">
               <ChevronRight className="w-4 h-4 rotate-180" />

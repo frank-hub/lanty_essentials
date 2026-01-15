@@ -18,7 +18,7 @@ interface JarsPageProps {
 
 const LantyJarsPage: React.FC<JarsPageProps> = ({
   JarsName = "Glass Jars",
-  JarsDescription = "...Some Text Here..."
+  JarsDescription = "Store, organize, and display with elegance using our high-quality glass jars designed for both functionality and style. Perfect for kitchens, laundry rooms, and home organization, our jars offer a clean, modern way to keep your essentials fresh and visible."
 }) => {
   const [filterBy, setFilterBy] = useState('Availability');
   const [sortBy, setSortBy] = useState('Featured');
@@ -26,28 +26,20 @@ const LantyJarsPage: React.FC<JarsPageProps> = ({
   const products: Product[] = [
     {
       id: '1',
-      name: 'Lanty Antibacterial Concentrated Underwear Laundry Detergent 300ml',
-      originalPrice: 'KSh 9,000',
-      salePrice: 'KSh 4,000',
-      image: 'https://www.malory.com.au/cdn/shop/collections/11_81b78de9-4ad7-406c-bc01-e8da581ea931.jpg?v=1758272387',
+      name: 'VARDAGEN jar with lid, clear glass, 1.9 l',
+      originalPrice: 'KSh 3,000',
+      salePrice: 'KSh 2,000',
+      image: 'https://www.ikea.com/gb/en/images/products/vardagen-jar-with-lid-clear-glass__0713736_pe729735_s5.jpg',
       onSale: true
     },
     {
       id: '2',
-      name: 'Lanty Camellia Scented Bulk Laundry Detergent 2.0',
+      name: '4 Pack Glass Jars with Bamboo Lids and Labels, Glass Containers',
       originalPrice: 'KSh 15,000',
       salePrice: 'KSh 8,500',
-      image: 'https://www.malory.com.au/cdn/shop/collections/0cd85820ed6b69d896d3210b1850ea55.jpg?v=1753502092&width=1000',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxMRaD8E7Zi3k87n_UeuVyVarGGTq7IJTIJQ&s',
       onSale: true
     },
-    {
-      id: '3',
-      name: 'Lanty Premium Liquid Laundry Detergent',
-      originalPrice: 'KSh 12,000',
-      salePrice: 'KSh 7,200',
-      image: 'https://www.malory.com.au/cdn/shop/files/5_1_4he1_8.jpg?v=1752462368&width=1070',
-      onSale: true
-    }
   ];
 
   const productCount = products.length;
@@ -64,8 +56,8 @@ const LantyJarsPage: React.FC<JarsPageProps> = ({
               {JarsDescription}
             </p>
             <p className="text-gray-700 leading-relaxed">
-              We aim to elevate your laundry routine with LANTY's premium laundry detergent for sensitive skin.
-              Experience the power of the best laundry liquid formulated for allergies and eczema!
+              Crafted from durable, food-safe glass, they are ideal for storing detergents, spices, grains,
+              snacks, and household items while maintaining a neat and clutter-free space.
             </p>
           </div>
         </div>

@@ -48,9 +48,9 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function washing_machine(){
+    public function washing_machines(){
         $cartItems = $this->getCartIdentifier()['cartItems'];
-        return Inertia::render('category/washing_machines',[
+        return Inertia::render('category/washing_machine',[
             'cartItems' => $cartItems
         ]);
     }

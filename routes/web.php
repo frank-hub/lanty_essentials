@@ -29,7 +29,7 @@ Route::prefix('category')->group(function () {
     Route::get('/laundry', [CategoryController::class, 'laundry'])->name('category.laundry');
     Route::get('/glass_jar', [CategoryController::class, 'glass_jar'])->name('category.glass_jar');
     Route::get('/home', [CategoryController::class, 'home'])->name('category.home');
-    Route::get('/washing_machine', [CategoryController::class, 'washing_machine'])->name('category.washing_machine');
+    Route::get('/washing_machines', [CategoryController::class, 'washing_machines'])->name('category.washing_machines');
 });
 
 Route::get('shop',[WelcomeController::class, 'shop'])->name('shop');

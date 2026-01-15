@@ -87,8 +87,9 @@ const LantyCartPage: React.FC = () => {
     return sum + 0; // Update this when you have compare_price
   }, 0);
 
-  const promoDiscount = promoApplied ? subtotal * 0.1 : 0;
-  const finalTotal = total - promoDiscount;
+//   const promoDiscount = promoApplied ? subtotal * 0.1 : 0;
+    const promoDiscount = 0;
+  const finalTotal = total ;
 
   return (
     <Layout>
@@ -215,7 +216,7 @@ const LantyCartPage: React.FC = () => {
                 })}
 
                 {/* Promo Code */}
-                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                {/* <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                   <div className="flex items-center space-x-3 mb-3">
                     <Tag className="w-5 h-5 text-[#98a69e]" />
                     <h3 className="font-medium text-gray-900">Promo Code</h3>
@@ -246,7 +247,7 @@ const LantyCartPage: React.FC = () => {
                       10% discount applied!
                     </p>
                   )}
-                </div>
+                </div> */}
               </>
             )}
           </div>

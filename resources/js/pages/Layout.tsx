@@ -49,7 +49,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 Laundry Products
               </button>
               <button
-                onClick={() => router.visit('/category/washing_machine')}
+                onClick={() => router.visit('/category/washing_machines')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
                 Washing Machines

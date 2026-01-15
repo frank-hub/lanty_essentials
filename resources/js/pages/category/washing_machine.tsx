@@ -18,7 +18,7 @@ interface MachinePageProps {
 
 const LantyMachinePage: React.FC<MachinePageProps> = ({
   MachineName = "Washing Machines",
-  MachineDescription = "Lanty Laundry Detergents are made with non-irritating, mild, skin-friendly and plant-based ingredients. All washing liquid are origin in Australia which are eco-friendly.We make the ultimate balance between effect and health and make the hypoallergenic laundry detergent as gentle as possible to the body's skin while ensuring the cleaning effect."
+  MachineDescription = "Upgrade your laundry experience with reliable, energy-efficient washing machines designed to deliver powerful cleaning while caring for your fabrics. Our collection from Lanty Essentials features modern machines built for durability, performance, and ease of use—perfect for homes of all sizes."
 }) => {
   const [filterBy, setFilterBy] = useState('Availability');
   const [sortBy, setSortBy] = useState('Featured');
@@ -26,26 +26,26 @@ const LantyMachinePage: React.FC<MachinePageProps> = ({
   const products: Product[] = [
     {
       id: '1',
-      name: 'Lanty Antibacterial Concentrated Underwear Laundry Detergent 300ml',
-      originalPrice: 'KSh 9,000',
-      salePrice: 'KSh 4,000',
-      image: 'https://www.malory.com.au/cdn/shop/collections/11_81b78de9-4ad7-406c-bc01-e8da581ea931.jpg?v=1758272387',
+      name: 'LG TurboWash 360 with AI F4C510GBTN1 10 kg 1400 Spin Washing Machine - Slate Grey',
+      originalPrice: 'KSh 89,000',
+      salePrice: 'KSh 84,000',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXlv2eEfyQQOwmzfP_Amcnrr7C3nbZUsolDw&s',
       onSale: true
     },
     {
       id: '2',
-      name: 'Lanty Camellia Scented Bulk Laundry Detergent 2.0',
-      originalPrice: 'KSh 15,000',
-      salePrice: 'KSh 8,500',
-      image: 'https://www.malory.com.au/cdn/shop/collections/0cd85820ed6b69d896d3210b1850ea55.jpg?v=1753502092&width=1000',
+      name: 'LG F2Y709BBTN1 9kg 1200 Spin Washing Machine in Black',
+      originalPrice: 'KSh 105,000',
+      salePrice: 'KSh 98,500',
+      image: 'https://sonic-images.imgix.net/XL/F2Y709BBTN15.jpg?auto=format&fit=max&w=800&q=60',
       onSale: true
     },
     {
       id: '3',
-      name: 'Lanty Premium Liquid Laundry Detergent',
-      originalPrice: 'KSh 12,000',
-      salePrice: 'KSh 7,200',
-      image: 'https://www.malory.com.au/cdn/shop/files/5_1_4he1_8.jpg?v=1752462368&width=1070',
+      name: 'Bosch 7Kg Top Loader Washing Machine (WOE703S0IN)',
+      originalPrice: 'KSh 102,000',
+      salePrice: 'KSh 97,200',
+      image: 'https://darlingretail.com/cdn/shop/products/1_3375291c-209f-43a2-aed9-7e02b1517e4a.jpg?v=1755761711',
       onSale: true
     }
   ];
@@ -64,8 +64,8 @@ const LantyMachinePage: React.FC<MachinePageProps> = ({
               {MachineDescription}
             </p>
             <p className="text-gray-700 leading-relaxed">
-              We aim to elevate your laundry routine with LANTY's premium laundry detergent for sensitive skin.
-              Experience the power of the best laundry liquid formulated for allergies and eczema!
+              Whether you’re handling everyday laundry or heavy loads, our washing machines combine
+               advanced technology with water and energy efficiency to help you save time, reduce costs, and enjoy consistently fresh results.
             </p>
           </div>
         </div>

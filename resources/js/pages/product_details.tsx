@@ -49,7 +49,7 @@ const LantyProductDetail: React.FC = () => {
     primaryImage ? sortedImages.findIndex(img => img.id === primaryImage.id) : 0
   );
   const [quantity, setQuantity] = useState(1);
-  const [selectedVariant, setSelectedVariant] = useState('1 Bottle');
+  const [selectedVariant] = useState('1 Bottle');
   const [addingToCart, setAddingToCart] = useState(false);
 
   const relatedProducts: RelatedProduct[] = [
@@ -259,32 +259,6 @@ const LantyProductDetail: React.FC = () => {
               <a href="#" className="underline hover:text-gray-900">Shipping</a> calculated at checkout.
             </p>
 
-            {/* Variant Selection */}
-            <div className="space-y-3">
-              <p className="font-medium text-gray-900">Bottle</p>
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => setSelectedVariant('1 Bottle')}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    selectedVariant === '1 Bottle'
-                      ? 'bg-black text-white'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                  }`}
-                >
-                  1 Bottle
-                </button>
-                <button
-                  onClick={() => setSelectedVariant('2 Bottles')}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    selectedVariant === '2 Bottles'
-                      ? 'bg-black text-white'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                  }`}
-                >
-                  2 Bottles
-                </button>
-              </div>
-            </div>
 
             {/* Quantity Selector */}
             {product.stock > 0 && (
@@ -331,18 +305,9 @@ const LantyProductDetail: React.FC = () => {
               {product.stock === 0 ? 'Out of Stock' : 'Buy Now'}
             </button>
 
-            {/* PayPal Button */}
-            <button
-              disabled={product.stock === 0}
-              className="w-full bg-yellow-400 text-black py-4 font-medium rounded hover:bg-yellow-500 transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <span>Pay with</span>
-              <span className="font-bold text-blue-800">PayPal</span>
-            </button>
-
             {/* More Payment Options */}
             <button className="w-full text-center text-sm text-gray-600 hover:text-gray-900 underline">
-              More payment options
+              Mpesa option available at checkout
             </button>
           </div>
         </div>

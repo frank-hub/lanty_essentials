@@ -169,7 +169,7 @@ const LantyHomepage: React.FC = () => {
                             src={primaryImage ? `/${primaryImage.image_path}` : '/placeholder.jpg'}
                             alt={product.name}
                             className="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300"
-                            onClick={() => router.visit(`/products/${product.id}`)}
+                            onClick={() => router.visit(`/product_details/${product.id}`)}
                           />
                           {discount > 0 && (
                             <span className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 text-xs font-semibold rounded">
@@ -201,7 +201,7 @@ const LantyHomepage: React.FC = () => {
                         <div className="p-4">
                           <h3
                             className="font-semibold text-gray-900 mb-2 line-clamp-2 cursor-pointer hover:text-[#98a69e] transition-colors"
-                            onClick={() => router.visit(`/products/${product.id}`)}
+                            onClick={() => router.visit(`/product_details/${product.id}`)}
                           >
                             {product.name}
                           </h3>
@@ -240,7 +240,7 @@ const LantyHomepage: React.FC = () => {
                         </div>
                       </div>
                 );
-            })};
+            })}
           </div>
           <div className="text-center mt-12">
             <button className="bg-black text-white px-8 py-3 font-small hover:bg-gray-800 transition-colors duration-200">
