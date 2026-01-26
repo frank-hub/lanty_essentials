@@ -113,7 +113,7 @@ const LantyProductDetail: React.FC = () => {
     router.post('/cart/add', {
       product_id: product.id,
       quantity: quantity,
-      variant: selectedVariant,
+      variant: product.sku,
       price: product.price
     }, {
       preserveScroll: true,

@@ -47,7 +47,7 @@ class CheckoutController extends Controller
         }
 
         $subtotal = (float) $cartItems->sum('subtotal');
-        $shipping = $subtotal >= 5000 ? 0 : 500;
+        $shipping = $subtotal >= 5000 ? 0 : 150;
         $total = $subtotal + $shipping;
 
         return Inertia::render('checkout/index', [
@@ -78,7 +78,7 @@ class CheckoutController extends Controller
                 'city' => 'required|string|max:100',
                 'postalCode' => 'nullable|string|max:20',
                 'shippingMethod' => 'required|in:standard,express',
-                'paymentMethod' => 'required|in:card,mpesa,paypal',
+                'paymentMethod' => 'required|in:card,mpesa',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -100,7 +100,7 @@ class CheckoutController extends Controller
 
         // Calculate totals
         $subtotal = (float) $cartItems->sum('subtotal');
-        $shipping = $validated['shippingMethod'] === 'express' ? 1000 : ($subtotal >= 5000 ? 0 : 500);
+        $shipping = $validated['shippingMethod'] === 'express' ? 300 : ($subtotal >= 5000 ? 0 : 150);
         $promoDiscount = $subtotal * 0.1; // Assuming 10% promo applied
         $total = $subtotal - $promoDiscount + $shipping;
 

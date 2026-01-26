@@ -37,31 +37,32 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex items-center justify-between h-16">
             <div className="flex-shrink-0">
               <button onClick={() => router.visit('/')}>
-                <h1 className="text-2xl font-bold text-gray-900">LANTY</h1>
+                {/* <h1 className="text-2xl font-bold text-gray-900">LANTY</h1> */}
+                <img src="/assets/logo.png" alt="LANTY Logo" className="h-8 w-auto" />
               </button>
             </div>
 
             <nav className="hidden md:flex space-x-8">
               <button
-                onClick={() => router.visit('/category/laundry')}
+                onClick={() => router.visit('/category/product/laundry')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
                 Laundry Products
               </button>
               <button
-                onClick={() => router.visit('/category/washing_machines')}
+                onClick={() => router.visit('/category/product/washing_machines')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
                 Washing Machines
               </button>
               <button
-                onClick={() => router.visit('/category/glass_jar')}
+                onClick={() => router.visit('/category/product/glass_jar')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
                 Glass Jars
               </button>
               <button
-                onClick={() => router.visit('/category/home')}
+                onClick={() => router.visit('/category/product/home')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
                 Lanty Home

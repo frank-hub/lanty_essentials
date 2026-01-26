@@ -26,10 +26,10 @@ Route::prefix('cart')->name('cart.')->group(function () {
 });
 
 Route::prefix('category')->group(function () {
-    Route::get('/laundry', [CategoryController::class, 'laundry'])->name('category.laundry');
-    Route::get('/glass_jar', [CategoryController::class, 'glass_jar'])->name('category.glass_jar');
-    Route::get('/home', [CategoryController::class, 'home'])->name('category.home');
-    Route::get('/washing_machines', [CategoryController::class, 'washing_machines'])->name('category.washing_machines');
+    Route::get('/product/{laundry}', [CategoryController::class, 'cat'])->name('category.laundry');
+    Route::get('/product/{glass_jar}', [CategoryController::class, 'cat'])->name('category.glass_jar');
+    Route::get('/product/{home}', [CategoryController::class, 'cat'])->name('category.home');
+    Route::get('/product/{washing_machines}', [CategoryController::class, 'cat'])->name('category.washing_machines');
 });
 
 Route::get('shop',[WelcomeController::class, 'shop'])->name('shop');
@@ -78,8 +78,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::post('/add_product', [ProductsController::class, 'store'])->name('add_product');
+    Route::get('/edit_product/{id}', [ProductsController::class, 'edit'])->name('edit_product');
+    Route::post('/update_product/{id}', [ProductsController::class, 'update'])->name('update_product');
+    Route::delete('/delete_product/{id}', [ProductsController::class, 'destroy'])->name('delete_product');
 
-    Route::get('inventory',[InventoryController::class, 'index'])->name('inventory');
+    // Route::get('inventory',[InventoryController::class, 'index'])->name('inventory');
+    Route::get('/sms/bulk', [WelcomeController::class, 'sendBulk']);
+
 
 });
 

@@ -92,6 +92,7 @@ const ShopPage: React.FC = () => {
     router.post('/cart/add', {
       product_id: product.id,
       quantity: 1,
+      variant: product.sku,
       price: product.price
     }, {
       preserveScroll: true,

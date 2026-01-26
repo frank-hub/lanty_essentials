@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Plus,Search, User, ShoppingCart, ChevronDown} from 'lucide-react';
 import { usePage , router ,Link} from '@inertiajs/react';
-import Layout from './layout';
+import Layout from './Layout';
 
 interface ProductImage {
   id: number;
@@ -44,6 +44,7 @@ const LantyHomepage: React.FC = () => {
     router.post('/cart/add', {
       product_id: product.id,
       quantity: 1,
+      variant: product.sku,
       price: product.price
     }, {
       preserveScroll: true,
@@ -61,20 +62,20 @@ const LantyHomepage: React.FC = () => {
 
   const categories = [
     {
-      name: 'Laundry Pods',
-      image: 'https://www.malory.com.au/cdn/shop/collections/11_81b78de9-4ad7-406c-bc01-e8da581ea931.jpg?v=1758272387'
+      name: 'Laundry Products',
+      image: 'assets/category/laundry.jpeg'
     },
     {
-      name: 'Laundry Detergents',
-      image: 'https://www.malory.com.au/cdn/shop/collections/0cd85820ed6b69d896d3210b1850ea55.jpg?v=1753502092&width=1000'
+      name: 'Washing Machines',
+      image: 'https://assets.products-live.ao.com/Images/936d1e37-cde1-44d0-9da0-52abb79c403c/1280x1280/17fbf7b6514f790ba38eabad8efc3b2e04f7d403_13.jpg'
     },
     {
-      name: 'Skin Care',
-      image: 'https://www.malory.com.au/cdn/shop/collections/IMG_4748.jpg?v=1753499132&width=1000'
+      name: 'Glass Jars',
+      image: 'assets/category/glassjar.jpg'
     },
     {
-      name: 'Home Cleaning',
-      image: 'https://www.malory.com.au/cdn/shop/collections/IMG_4748.jpg?v=1753499132&width=1000'
+      name: 'Lanty Home',
+      image: 'assets/category/coming.jpg'
     }
   ];
 
@@ -85,7 +86,7 @@ const LantyHomepage: React.FC = () => {
     <section className="relative w-full h-[90vh] flex items-center justify-center bg-gray-100">
       {/* Background image */}
       <img
-        src="https://www.malory.com.au/cdn/shop/files/3e9b4c31c67413c55ff1042ab9594d2.jpg?v=1753501380&width=2000" // place your hero image in public/images
+        src="/assets/hero-image.jpeg"
         alt="Lanty Products"
         className="absolute inset-0 w-full h-full object-cover"
       />
@@ -94,7 +95,7 @@ const LantyHomepage: React.FC = () => {
       <div className="absolute inset-0 bg-opacity-30" style={{ backgroundColor: 'rgb(0 0 0 / 37%)' }}></div>
 
       {/* Content */}
-      <div className="relative z-10 text-center text-white px-4 mt-100">
+      <div className="relative z-10 text-center text-white px-4 mt-100 mb-20">
         <h1 className="text-4xl md:text-6xl font-bold mb-6">
           Browse our latest products
         </h1>
@@ -243,7 +244,7 @@ const LantyHomepage: React.FC = () => {
             })}
           </div>
           <div className="text-center mt-12">
-            <button className="bg-black text-white px-8 py-3 font-small hover:bg-gray-800 transition-colors duration-200">
+            <button onClick={() => router.visit('/shop')} className="bg-black text-white px-8 py-3 font-small hover:bg-gray-800 transition-colors duration-200">
               View all
             </button>
           </div>
@@ -258,7 +259,7 @@ const LantyHomepage: React.FC = () => {
                 {/* Left: Image */}
                 <div className="w-full h-full">
                   <img
-                    src="https://www.malory.com.au/cdn/shop/files/a69ede86a9b5fe9e7f808acffc20748d.png?v=1753502527&width=1500" // place your image in public/images
+                    src="/assets/about.jpeg"
                     alt="Lanty Combo Deal"
                     className="w-full h-full object-cover"
                   />
@@ -270,7 +271,7 @@ const LantyHomepage: React.FC = () => {
                       About us
                   </h2>
                   <p className="text-white mb-6">
-                    At LANTY, our vision is to empower women by providing them with high-quality,innovative Laundry and feminine care products.
+                    At LANTY, our vision is to empower women by providing them with high-quality,innovative Laundry products.
                   </p>
                 <div className="flex justify-center">
                   <button
@@ -361,7 +362,7 @@ const LantyHomepage: React.FC = () => {
           {/* Left: Image */}
           <div className="w-full h-full">
             <img
-              src="https://www.malory.com.au/cdn/shop/files/5_1_4he1_8.jpg?v=1752462368&width=1070" // place your image in public/images
+              src="assets/combo.png"
               alt="Lanty Combo Deal"
               className="w-full h-full object-cover"
             />

@@ -1,14 +1,28 @@
 import React, { useState } from 'react';
-import { Search, User, ShoppingCart, ChevronDown, Filter } from 'lucide-react';
-import Layout from '../layout';
+import { Search, User, ShoppingCart, ChevronDown, Filter ,Plus } from 'lucide-react';
+import Layout from '../Layout';
+import {usePage ,router} from '@inertiajs/react';
+
+
+
+interface ProductImage {
+  id: number;
+  image_path: string;
+  is_primary: boolean;
+}
 
 interface Product {
-  id: string;
+  id: number;
+  sku: string;
   name: string;
-  originalPrice?: string;
-  salePrice: string;
-  image: string;
-  onSale?: boolean;
+  category: string;
+  compare_price?: number;
+  price: number;
+  stock: number;
+  status: 'active' | 'inactive' | 'draft';
+   images: ProductImage[];
+  createdAt: string;
+  sales: number;
 }
 
 interface MachinePageProps {
@@ -16,41 +30,43 @@ interface MachinePageProps {
   MachineDescription?: string;
 }
 
+
 const LantyMachinePage: React.FC<MachinePageProps> = ({
   MachineName = "Washing Machines",
   MachineDescription = "Upgrade your laundry experience with reliable, energy-efficient washing machines designed to deliver powerful cleaning while caring for your fabrics. Our collection from Lanty Essentials features modern machines built for durability, performance, and ease of use—perfect for homes of all sizes."
 }) => {
   const [filterBy, setFilterBy] = useState('Availability');
   const [sortBy, setSortBy] = useState('Featured');
-
-  const products: Product[] = [
-    {
-      id: '1',
-      name: 'LG TurboWash 360 with AI F4C510GBTN1 10 kg 1400 Spin Washing Machine - Slate Grey',
-      originalPrice: 'KSh 89,000',
-      salePrice: 'KSh 84,000',
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXlv2eEfyQQOwmzfP_Amcnrr7C3nbZUsolDw&s',
-      onSale: true
-    },
-    {
-      id: '2',
-      name: 'LG F2Y709BBTN1 9kg 1200 Spin Washing Machine in Black',
-      originalPrice: 'KSh 105,000',
-      salePrice: 'KSh 98,500',
-      image: 'https://sonic-images.imgix.net/XL/F2Y709BBTN15.jpg?auto=format&fit=max&w=800&q=60',
-      onSale: true
-    },
-    {
-      id: '3',
-      name: 'Bosch 7Kg Top Loader Washing Machine (WOE703S0IN)',
-      originalPrice: 'KSh 102,000',
-      salePrice: 'KSh 97,200',
-      image: 'https://darlingretail.com/cdn/shop/products/1_3375291c-209f-43a2-aed9-7e02b1517e4a.jpg?v=1755761711',
-      onSale: true
-    }
-  ];
-
+  const { washingMachineProducts } = usePage().props as { washingMachineProducts?: Product[] };
+  const products: Product[] = washingMachineProducts || [];
   const productCount = products.length;
+
+  const [addingToCart, setAddingToCart] = useState<number | null>(null);
+  const discountPercentage = (product: Product) => {
+      if (!product.compare_price) return 0;
+      return Math.round(((product.compare_price - product.price) / product.compare_price) * 100);
+  };
+
+     const handleAddToCart = (product: Product) => {
+          setAddingToCart(product.id);
+
+          router.post('/cart/add', {
+            product_id: product.id,
+            quantity: 1,
+            price: product.price
+          }, {
+            preserveScroll: true,
+            onSuccess: () => {
+              setAddingToCart(null);
+            },
+            onError: (errors) => {
+              setAddingToCart(null);
+              console.error('Error adding to cart:', errors);
+              alert('Failed to add product to cart');
+            }
+          });
+      };
+
 
   return (
     <Layout>
@@ -115,40 +131,86 @@ const LantyMachinePage: React.FC<MachinePageProps> = ({
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
-            <a href="/product_details">
-                <div key={product.id} className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-lg bg-gray-100 mb-4">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                {product.onSale && (
-                  <span className="absolute top-4 left-4 bg-black text-white px-3 py-1 text-sm font-medium rounded">
-                    Sale
-                  </span>
-                )}
-              </div>
+                        {products.map((product) => {
+                const primaryImage = product.images.find((img) => img.is_primary) || product.images[0];
+                return (
+                <div
+                        key={product.id}
+                        className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow group"
+                      >
+                        <div className="relative aspect-square bg-gray-100">
+                          <img
+                            src={primaryImage ? `/${primaryImage.image_path}` : '/placeholder.jpg'}
+                            alt={product.name}
+                            className="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300"
+                            onClick={() => router.visit(`/product_details/${product.id}`)}
+                          />
 
-              <div className="space-y-2">
-                <h3 className="text-sm font-small text-gray-900 group-hover:text-[#98a69e] line-clamp-2">
-                  {product.name}
-                </h3>
-                <div className="flex items-center justify-between space-x-3">
-                  {product.originalPrice && (
-                    <span className="text-sm text-gray-500 line-through">
-                      {product.originalPrice}
-                    </span>
-                  )}
-                  <span className="text-sm font-medium text-gray-900">
-                    {product.salePrice}
-                  </span>
-                </div>
-              </div>
-            </div>
-            </a>
-          ))}
+                          {product.stock === 0 && (
+                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                              <span className="bg-white text-gray-900 px-4 py-2 rounded-lg font-semibold">
+                                Out of Stock
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Quick Add Button */}
+                          <button
+                            onClick={() => handleAddToCart(product)}
+                            disabled={product.stock === 0 || addingToCart === product.id}
+                            className="absolute bottom-3 right-3 bg-[#98a69e] text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition-all transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {addingToCart === product.id ? (
+                              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <Plus className="w-5 h-5" />
+                            )}
+                          </button>
+                        </div>
+
+                        <div className="p-4">
+                          <h3
+                            className="font-semibold text-gray-900 mb-2 line-clamp-2 cursor-pointer hover:text-[#98a69e] transition-colors"
+                            onClick={() => router.visit(`/product_details/${product.id}`)}
+                          >
+                            {product.name}
+                          </h3>
+
+                          <p className="text-xs text-gray-500 mb-2">SKU: {product.sku}</p>
+
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              {product.compare_price && (
+                                <span className="text-sm text-gray-500 line-through">
+                                  KSh {product.compare_price.toLocaleString()}
+                                </span>
+                              )}
+                              <span className="text-lg font-bold text-gray-900">
+                                KSh {product.price.toLocaleString()}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="mt-3 flex items-center justify-between">
+                            <span
+                              className={`text-xs font-medium ${
+                                product.stock > 0 ? 'text-green-600' : 'text-red-600'
+                              }`}
+                            >
+                              {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                            </span>
+                            <button
+                              onClick={() => router.visit(`/product_details/${product.id}`)}
+                              key={product.id}
+                              className="text-sm text-[#98a69e] hover:text-gray-700 font-medium"
+                            >
+                              View Details →
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                );
+            })}
         </div>
 
         {/* Load More Button */}

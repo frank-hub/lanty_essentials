@@ -93,6 +93,25 @@ const LantyProductsPage: React.FC = () => {
     return { color: 'text-green-600', icon: CheckCircle };
   };
 
+    const handleEdit = (product: Product) => {
+    router.visit(`/admin/products/${product.id}/edit`);
+    };
+
+    const handleDelete = (productId: number) => {
+    if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+        router.delete(`/delete_product/${productId}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            alert('Product deleted successfully!');
+        },
+        onError: (errors) => {
+            console.error('Delete failed:', errors);
+            alert('Failed to delete product');
+        }
+        });
+    }
+    };
+
   return (
     <div className='bg-gray-50 min-h-screen'>
               <div className="bg-white border-b border-gray-200 px-6 py-4">
@@ -378,12 +397,14 @@ const LantyProductsPage: React.FC = () => {
                           <button className="p-1 text-gray-400 hover:text-[#98a69e] transition-colors">
                             <Eye className="w-4 h-4" />
                           </button>
-                          <button className="p-1 text-gray-400 hover:text-blue-600 transition-colors">
+
+                          <button  onClick={() => handleEdit(product)}  className="p-1 text-gray-400 hover:text-blue-600 transition-colors">
                             <Edit className="w-4 h-4" />
                           </button>
-                          <button className="p-1 text-gray-400 hover:text-red-600 transition-colors">
+                        <button onClick={() => handleDelete(product.id)} className="p-1 text-gray-400 hover:text-red-600 transition-colors">
                             <Trash2 className="w-4 h-4" />
-                          </button>
+                        </button>
+
                           <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors">
                             <MoreHorizontal className="w-4 h-4" />
                           </button>

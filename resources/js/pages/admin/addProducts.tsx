@@ -61,11 +61,10 @@ const LantyAddProductPage: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const categories = [
-    'Laundry Detergents',
-    'Laundry Pods',
-    'Sanitary Pads',
-    'Skin Care',
-    'Home Cleaning'
+    'Laundry Products',
+    'Washing Machines',
+    'Glass Jars',
+    'Lanty Home',
   ];
 
   const handleInputChange = (field: string, value: string) => {

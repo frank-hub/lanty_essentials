@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, User, ShoppingCart, ChevronDown, ChevronRight, Truck, Shield, CreditCard, MapPin, Gift, CheckCircle, Menu, X, AlertCircle } from 'lucide-react';
 import { router, usePage } from '@inertiajs/react';
+import Layout from '../Layout';
 
 interface CartItem {
   id: number;
@@ -54,7 +55,7 @@ const LantyCheckoutPage: React.FC = () => {
   });
 
   const promoDiscount = subtotal * 0.1;
-  const shippingCost = shippingMethod === 'express' ? 1000 : (subtotal >= 5000 ? 0 : shipping);
+  const shippingCost = shippingMethod === 'express' ? 300 : (subtotal >= 5000 ? 0 : shipping);
   const finalTotal = subtotal  + shippingCost;
 
   const handleInputChange = (field: keyof ShippingInfo, value: string) => {
@@ -197,62 +198,8 @@ const LantyCheckoutPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex-shrink-0">
-              <button onClick={() => router.visit('/')} className="hover:opacity-80">
-                <h1 className="text-2xl font-bold text-gray-900">LANTY</h1>
-              </button>
-            </div>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-1">
-              <button onClick={() => router.visit('/products/category/sanitary-pads')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">Sanitary Pads</button>
-              <button onClick={() => router.visit('/products/category/laundry-detergents')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">Laundry Detergents</button>
-              <button onClick={() => router.visit('/products/category/laundry-pods')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">Laundry Pods</button>
-              <button onClick={() => router.visit('/products/category/combo')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">Combo</button>
-              <button onClick={() => router.visit('/products/category/skin-care')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">Skin Care</button>
-              <button onClick={() => router.visit('/faqs')} className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">FAQs</button>
-            </nav>
-
-            {/* Right Section */}
-            <div className="flex items-center space-x-4">
-              <Search className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900 transition-colors" />
-              <User className="w-5 h-5 text-gray-600 cursor-pointer hover:text-gray-900 transition-colors" onClick={() => router.visit('/account')} />
-              <div className="relative cursor-pointer" onClick={() => router.visit('/cart')}>
-                <ShoppingCart className="w-5 h-5 text-[#98a69e]" />
-                {cartItems.length > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-[#98a69e] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                    {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-                  </span>
-                )}
-              </div>
-
-              {/* Mobile Menu Button */}
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden">
-                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Mobile Navigation */}
-          {mobileMenuOpen && (
-            <div className="md:hidden pb-4 border-t border-gray-200">
-              <button onClick={() => { router.visit('/products/category/sanitary-pads'); setMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900">Sanitary Pads</button>
-              <button onClick={() => { router.visit('/products/category/laundry-detergents'); setMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900">Laundry Detergents</button>
-              <button onClick={() => { router.visit('/products/category/laundry-pods'); setMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900">Laundry Pods</button>
-              <button onClick={() => { router.visit('/products/category/combo'); setMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900">Combo</button>
-              <button onClick={() => { router.visit('/products/category/skin-care'); setMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900">Skin Care</button>
-              <button onClick={() => { router.visit('/faqs'); setMobileMenuOpen(false); }} className="block w-full text-left px-3 py-2 text-gray-600 hover:text-gray-900">FAQs</button>
-            </div>
-          )}
-        </div>
-      </header>
-
-      {/* Progress Indicator */}
+    <Layout>
+              {/* Progress Indicator */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-center space-x-8">
@@ -334,10 +281,10 @@ const LantyCheckoutPage: React.FC = () => {
                   <input type="radio" name="shipping" value="standard" checked={shippingMethod === 'standard'} onChange={(e) => setShippingMethod(e.target.value)} className="w-4 h-4" />
                   <div className="ml-3 flex-1">
                     <div className="flex justify-between items-center">
-                      <span className="font-medium text-gray-900">Standard Delivery</span>
-                      <span className="font-semibold text-gray-900">{subtotal >= 5000 ? 'FREE' : 'KSh 500'}</span>
+                      <span className="font-medium text-gray-900">Same Day Delivery</span>
+                      <span className="font-semibold text-gray-900">{subtotal >= 5000 ? 'FREE' : 'KSh 150'}</span>
                     </div>
-                    <p className="text-sm text-gray-600">3-5 business days</p>
+                    <p className="text-sm text-gray-600">Within Nairobi (Pick Up Mtaani)</p>
                   </div>
                 </label>
 
@@ -345,10 +292,10 @@ const LantyCheckoutPage: React.FC = () => {
                   <input type="radio" name="shipping" value="express" checked={shippingMethod === 'express'} onChange={(e) => setShippingMethod(e.target.value)} className="w-4 h-4" />
                   <div className="ml-3 flex-1">
                     <div className="flex justify-between items-center">
-                      <span className="font-medium text-gray-900">Express Delivery</span>
-                      <span className="font-semibold text-gray-900">KSh 1,000</span>
+                      <span className="font-medium text-gray-900">Same Day Delivery</span>
+                      <span className="font-semibold text-gray-900">{subtotal >= 5000 ? 'FREE' : 'KSh 300'}</span>
                     </div>
-                    <p className="text-sm text-gray-600">1-2 business days</p>
+                    <p className="text-sm text-gray-600">Outside Nairobi</p>
                   </div>
                 </label>
               </div>
@@ -362,7 +309,7 @@ const LantyCheckoutPage: React.FC = () => {
               </h3>
 
               <div className="space-y-3">
-                <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#98a69e] transition-colors" style={{borderColor: paymentMethod === 'card' ? '#98a69e' : undefined}}>
+                {/* <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#98a69e] transition-colors" style={{borderColor: paymentMethod === 'card' ? '#98a69e' : undefined}}>
                   <input type="radio" name="payment" value="card" checked={paymentMethod === 'card'} onChange={(e) => setPaymentMethod(e.target.value)} className="w-4 h-4" />
                   <div className="ml-3 flex-1">
                     <span className="font-medium text-gray-900">Credit/Debit Card</span>
@@ -371,28 +318,21 @@ const LantyCheckoutPage: React.FC = () => {
                       <div className="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded">MC</div>
                     </div>
                   </div>
-                </label>
+                </label> */}
 
                 <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#98a69e] transition-colors" style={{borderColor: paymentMethod === 'mpesa' ? '#98a69e' : undefined}}>
-                  <input type="radio" name="payment" value="mpesa" checked={paymentMethod === 'mpesa'} onChange={(e) => setPaymentMethod(e.target.value)} className="w-4 h-4" />
+                  <input type="radio" name="payment" value="card" checked={paymentMethod === 'card'} onChange={(e) => setPaymentMethod(e.target.value)} className="w-4 h-4" />
+                  {/* TODO: Add M-Pesa Feature all backend is ready */}
                   <div className="ml-3">
                     <span className="font-medium text-gray-900">M-Pesa</span>
                     <p className="text-sm text-gray-600">Pay with your mobile money</p>
-                  </div>
-                </label>
-
-                <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[#98a69e] transition-colors" style={{borderColor: paymentMethod === 'paypal' ? '#98a69e' : undefined}}>
-                  <input type="radio" name="payment" value="paypal" checked={paymentMethod === 'paypal'} onChange={(e) => setPaymentMethod(e.target.value)} className="w-4 h-4" />
-                  <div className="ml-3">
-                    <span className="font-medium text-gray-900">PayPal</span>
-                    <p className="text-sm text-gray-600">Pay with your PayPal account</p>
                   </div>
                 </label>
               </div>
 
               <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-sm text-blue-700">
-                  💳 For demo purposes, all payment methods are simulated. Your order will be processed successfully.
+                    💳 Payment processing is in development. We'll call you to arrange delivery and payment.
                 </p>
               </div>
             </div>
@@ -459,7 +399,7 @@ const LantyCheckoutPage: React.FC = () => {
               )}
             </div>
 
-            
+
 
             <button onClick={() => router.visit('/cart')} className="w-full text-center text-gray-600 hover:text-gray-900 py-2 transition-colors flex items-center justify-center space-x-1">
               <ChevronRight className="w-4 h-4 rotate-180" />
@@ -468,38 +408,7 @@ const LantyCheckoutPage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-12 mt-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div className="flex flex-col items-center space-y-2">
-              <Shield className="w-8 h-8 text-[#98a69e]" />
-              <h4 className="font-semibold text-gray-900">Secure Checkout</h4>
-              <p className="text-sm text-gray-600">SSL encrypted</p>
-            </div>
-            <div className="flex flex-col items-center space-y-2">
-              <Truck className="w-8 h-8 text-[#98a69e]" />
-              <h4 className="font-semibold text-gray-900">Fast Delivery</h4>
-              <p className="text-sm text-gray-600">Free over KSh 5,000</p>
-            </div>
-            <div className="flex flex-col items-center space-y-2">
-              <CreditCard className="w-8 h-8 text-[#98a69e]" />
-              <h4 className="font-semibold text-gray-900">Secure Payment</h4>
-              <p className="text-sm text-gray-600">Multiple options</p>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-gray-200 text-center">
-            <p className="text-sm text-gray-500">
-              © 2024 LANTY. All rights reserved. |
-              <a href="#" className="hover:text-gray-700 ml-1">Privacy Policy</a> |
-              <a href="#" className="hover:text-gray-700 ml-1">Terms of Service</a>
-            </p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </Layout>
   );
 };
 
