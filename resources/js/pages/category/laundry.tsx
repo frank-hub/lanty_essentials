@@ -44,7 +44,6 @@ const LantyLaundryPage: React.FC<LaundryPageProps> = ({
 
   const products: Product[] = laundryProducts || [];
 
-  console.log('Laundry Products:', products);
 
   const productCount = products.length;
 
@@ -55,7 +54,8 @@ const LantyLaundryPage: React.FC<LaundryPageProps> = ({
         router.post('/cart/add', {
           product_id: product.id,
           quantity: 1,
-          price: product.price
+          price: product.price,
+          variant : product.sku,
         }, {
           preserveScroll: true,
           onSuccess: () => {

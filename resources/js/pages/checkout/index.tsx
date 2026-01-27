@@ -48,7 +48,7 @@ const LantyCheckoutPage: React.FC = () => {
     firstName: '',
     lastName: '',
     email: '',
-    phone: '',
+    phone: '+254',
     address: '',
     city: '',
     postalCode: ''

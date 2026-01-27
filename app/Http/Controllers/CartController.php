@@ -39,7 +39,7 @@ class CartController extends Controller
             ->get();
 
         $subtotal = (float)$cartItems->sum(fn($item) => $item->price * $item->quantity);
-        $shipping = $subtotal >= 5000 ? 0 : 500;
+        $shipping = $subtotal >= 5000 ? 0 : 150;
         $total = $subtotal + $shipping;
 
         // return response()->json(['cartItems' => $cartItems, 'subtotal' => $subtotal, 'shipping' => $shipping, 'total' => $total]);

@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
-import { Search, User, ShoppingCart, ChevronDown, Filter } from 'lucide-react';
-import Layout from '../layout';
+import React, { use, useState } from 'react';
+import { Search, User, ShoppingCart, ChevronDown, Filter ,Plus} from 'lucide-react';
+import Layout from '../Layout';
+import { usePage ,router} from '@inertiajs/react';
+
+interface ProductImage {
+  id: number;
+  image_path: string;
+  is_primary: boolean;
+}
 
 interface Product {
-  id: string;
+  id: number;
+  sku: string;
   name: string;
-  originalPrice?: string;
-  salePrice: string;
-  image: string;
-  onSale?: boolean;
+  category: string;
+  compare_price?: number;
+  price: number;
+  stock: number;
+  status: 'active' | 'inactive' | 'draft';
+   images: ProductImage[];
+  createdAt: string;
+  sales: number;
 }
 
 interface HomePageProps {
@@ -23,34 +35,32 @@ const LantyHomePage: React.FC<HomePageProps> = ({
   const [filterBy, setFilterBy] = useState('Availability');
   const [sortBy, setSortBy] = useState('Featured');
 
-  const products: Product[] = [
-    {
-      id: '1',
-      name: 'Lanty Antibacterial Concentrated Underwear Laundry Detergent 300ml',
-      originalPrice: 'KSh 9,000',
-      salePrice: 'KSh 4,000',
-      image: 'https://www.malory.com.au/cdn/shop/collections/11_81b78de9-4ad7-406c-bc01-e8da581ea931.jpg?v=1758272387',
-      onSale: true
-    },
-    {
-      id: '2',
-      name: 'Lanty Camellia Scented Bulk Laundry Detergent 2.0',
-      originalPrice: 'KSh 15,000',
-      salePrice: 'KSh 8,500',
-      image: 'https://www.malory.com.au/cdn/shop/collections/0cd85820ed6b69d896d3210b1850ea55.jpg?v=1753502092&width=1000',
-      onSale: true
-    },
-    {
-      id: '3',
-      name: 'Lanty Premium Liquid Laundry Detergent',
-      originalPrice: 'KSh 12,000',
-      salePrice: 'KSh 7,200',
-      image: 'https://www.malory.com.au/cdn/shop/files/5_1_4he1_8.jpg?v=1752462368&width=1070',
-      onSale: true
-    }
-  ];
+  const products = usePage().props.homeProducts as Product[];
 
   const productCount = products.length;
+
+  const [addingToCart, setAddingToCart] = useState<number | null>(null);
+
+       const handleAddToCart = (product: Product) => {
+            setAddingToCart(product.id);
+
+            router.post('/cart/add', {
+              product_id: product.id,
+              quantity: 1,
+              price: product.price,
+              variant : product.sku,
+            }, {
+              preserveScroll: true,
+              onSuccess: () => {
+                setAddingToCart(null);
+              },
+              onError: (errors) => {
+                setAddingToCart(null);
+                console.error('Error adding to cart:', errors);
+                alert('Failed to add product to cart');
+              }
+            });
+        };
 
   return (
     <Layout>
@@ -115,40 +125,86 @@ const LantyHomePage: React.FC<HomePageProps> = ({
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
-            <a href="/product_details">
-                <div key={product.id} className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-lg bg-gray-100 mb-4">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                {product.onSale && (
-                  <span className="absolute top-4 left-4 bg-black text-white px-3 py-1 text-sm font-medium rounded">
-                    Sale
-                  </span>
-                )}
-              </div>
+            {products.map((product) => {
+                const primaryImage = product.images.find((img) => img.is_primary) || product.images[0];
+                return (
+                <div
+                        key={product.id}
+                        className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow group"
+                      >
+                        <div className="relative aspect-square bg-gray-100">
+                          <img
+                            src={primaryImage ? `/${primaryImage.image_path}` : '/placeholder.jpg'}
+                            alt={product.name}
+                            className="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300"
+                            onClick={() => router.visit(`/product_details/${product.id}`)}
+                          />
 
-              <div className="space-y-2">
-                <h3 className="text-sm font-small text-gray-900 group-hover:text-[#98a69e] line-clamp-2">
-                  {product.name}
-                </h3>
-                <div className="flex items-center justify-between space-x-3">
-                  {product.originalPrice && (
-                    <span className="text-sm text-gray-500 line-through">
-                      {product.originalPrice}
-                    </span>
-                  )}
-                  <span className="text-sm font-medium text-gray-900">
-                    {product.salePrice}
-                  </span>
-                </div>
-              </div>
-            </div>
-            </a>
-          ))}
+                          {product.stock === 0 && (
+                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                              <span className="bg-white text-gray-900 px-4 py-2 rounded-lg font-semibold">
+                                Out of Stock
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Quick Add Button */}
+                          <button
+                            onClick={() => handleAddToCart(product)}
+                            disabled={product.stock === 0 || addingToCart === product.id}
+                            className="absolute bottom-3 right-3 bg-[#98a69e] text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition-all transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {addingToCart === product.id ? (
+                              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <Plus className="w-5 h-5" />
+                            )}
+                          </button>
+                        </div>
+
+                        <div className="p-4">
+                          <h3
+                            className="font-semibold text-gray-900 mb-2 line-clamp-2 cursor-pointer hover:text-[#98a69e] transition-colors"
+                            onClick={() => router.visit(`/product_details/${product.id}`)}
+                          >
+                            {product.name}
+                          </h3>
+
+                          <p className="text-xs text-gray-500 mb-2">SKU: {product.sku}</p>
+
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              {product.compare_price && (
+                                <span className="text-sm text-gray-500 line-through">
+                                  KSh {product.compare_price.toLocaleString()}
+                                </span>
+                              )}
+                              <span className="text-lg font-bold text-gray-900">
+                                KSh {product.price.toLocaleString()}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="mt-3 flex items-center justify-between">
+                            <span
+                              className={`text-xs font-medium ${
+                                product.stock > 0 ? 'text-green-600' : 'text-red-600'
+                              }`}
+                            >
+                              {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                            </span>
+                            <button
+                              onClick={() => router.visit(`/product_details/${product.id}`)}
+                              key={product.id}
+                              className="text-sm text-[#98a69e] hover:text-gray-700 font-medium"
+                            >
+                              View Details →
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                );
+            })}
         </div>
 
         {/* Load More Button */}

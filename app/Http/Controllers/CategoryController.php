@@ -30,6 +30,7 @@ class CategoryController extends Controller
 
     public function cat($category)
     {
+
         switch ($category) {
             case 'laundry':
                 return $this->laundry();
@@ -53,7 +54,7 @@ class CategoryController extends Controller
 
     public function laundry(){
         $cartItems = $this->getCartIdentifier()['cartItems'];
-        $laundryProducts = $this->getLaundryProducts('Laundry Pods');
+        $laundryProducts = $this->getLaundryProducts('Laundry Products');
 
         return Inertia::render('category/laundry', [
             'cartItems' => $cartItems,
@@ -84,7 +85,7 @@ class CategoryController extends Controller
     public function washing_machines(){
         $cartItems = $this->getCartIdentifier()['cartItems'];
         $washingMachineProducts = $this->getLaundryProducts('Washing Machines');
-        
+
         return Inertia::render('category/washing_machine',[
             'cartItems' => $cartItems,
             'washingMachineProducts' => $washingMachineProducts

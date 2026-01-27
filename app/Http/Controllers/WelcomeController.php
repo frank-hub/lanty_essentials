@@ -28,13 +28,11 @@ class WelcomeController extends Controller
                 'Accept' => 'application/json',
                 'apiKey' => env('AT_API_KEY'),
             ])
-            ->asForm() // 🔴 VERY IMPORTANT
+            ->asForm()
             ->post('https://api.africastalking.com/version1/messaging', [
                 'username' => env('AT_USERNAME'),
-                'to'       => '+254736948522',
-                'message'  => 'Hello from Lanty Essentials, your order is being processed.',
-
-                // 'from'     => env('AT_FROM'), // optional but recommended
+                'to'       => '+254106687003',
+                'message'  => 'Hi from Lanty, your order is being processed.',
             ]);
 
         if (!$response->successful()) {

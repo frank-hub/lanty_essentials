@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
@@ -183,6 +186,9 @@ class CheckoutController extends Controller
             // Send confirmation email
             $this->sendOrderConfirmation($order, $customer);
 
+            // Send confirmation SMS
+            $this->sendOrderConfirmationSMS($order, $customer);
+
             DB::commit();
 
             return response()->json([
@@ -194,7 +200,7 @@ class CheckoutController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             $errorMsg = $e->getMessage();
-            \Log::error('Checkout error: ' . $errorMsg, [
+            Log::error('Checkout error: ' . $errorMsg, [
                 'trace' => $e->getTraceAsString(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
@@ -246,7 +252,7 @@ class CheckoutController extends Controller
             // ]);
 
             // For now, simulate success
-            \Log::info('Card payment processed', [
+            Log::info('Card payment processed', [
                 'order_id' => $order->id,
                 'amount' => $amount,
                 'customer_email' => $customer->email,
@@ -254,7 +260,7 @@ class CheckoutController extends Controller
 
             return true;
         } catch (\Exception $e) {
-            \Log::error('Card payment error: ' . $e->getMessage());
+            Log::error('Card payment error: ' . $e->getMessage());
             return false;
         }
     }
@@ -289,7 +295,7 @@ class CheckoutController extends Controller
             //         'TransactionDesc' => 'Payment for Order ' . $order->id,
             //     ]);
 
-            \Log::info('M-Pesa STK initiated', [
+            Log::info('M-Pesa STK initiated', [
                 'order_id' => $order->id,
                 'amount' => $amount,
                 'phone' => $data['mpesaPhone'],
@@ -297,7 +303,7 @@ class CheckoutController extends Controller
 
             return true;
         } catch (\Exception $e) {
-            \Log::error('M-Pesa payment error: ' . $e->getMessage());
+            Log::error('M-Pesa payment error: ' . $e->getMessage());
             return false;
         }
     }
@@ -329,7 +335,7 @@ class CheckoutController extends Controller
             //     ->setPayer($payer)
             //     ->setTransactions([/* transaction details */]);
 
-            \Log::info('PayPal payment initiated', [
+            Log::info('PayPal payment initiated', [
                 'order_id' => $order->id,
                 'amount' => $amount,
                 'customer_email' => $customer->email,
@@ -337,7 +343,7 @@ class CheckoutController extends Controller
 
             return true;
         } catch (\Exception $e) {
-            \Log::error('PayPal payment error: ' . $e->getMessage());
+            Log::error('PayPal payment error: ' . $e->getMessage());
             return false;
         }
     }
@@ -356,9 +362,41 @@ class CheckoutController extends Controller
                         ->subject("Order Confirmation - {$order->id}");
             });
 
-            \Log::info('Confirmation email sent', ['customer_email' => $customer->email, 'order_id' => $order->id]);
+            Log::info('Confirmation email sent', ['customer_email' => $customer->email, 'order_id' => $order->id]);
         } catch (\Exception $e) {
-            \Log::error('Email sending error: ' . $e->getMessage());
+            Log::error('Email sending error: ' . $e->getMessage());
+        }
+    }
+
+    // Send order confirmation sms
+    private function sendOrderConfirmationSMS($order, $customer)
+    {
+        try {
+            $message = "Thank you for your order {$order->id}. Your order is being processed. Lanty Essentials.";
+
+            $response = Http::withHeaders([
+                    'Accept' => 'application/json',
+                    'apiKey' => env('AT_API_KEY'),
+                ])
+                ->asForm()
+                ->post('https://api.africastalking.com/version1/messaging', [
+                    'username' => env('AT_USERNAME'),
+                    'to'       => $customer->phone,
+                    'message'  => $message,
+                ]);
+
+            if ($response->successful()) {
+                Log::info('Confirmation SMS sent', ['customer_phone' => $customer->phone, 'order_id' => $order->id]);
+            } else {
+                Log::error('SMS sending failed', [
+                    'customer_phone' => $customer->phone,
+                    'order_id' => $order->id,
+                    'status' => $response->status(),
+                    'response' => $response->json() ?? $response->body(),
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('SMS sending error: ' . $e->getMessage());
         }
     }
 
@@ -454,17 +492,44 @@ class CheckoutController extends Controller
                 $order = Order::find($orderId);
                 $order->update(['order_status' => 'completed']);
 
-                \Log::info('M-Pesa payment successful', ['order_id' => $orderId]);
+                Log::info('M-Pesa payment successful', ['order_id' => $orderId]);
             } else {
                 $order = Order::find($orderId);
                 $order->update(['order_status' => 'payment_failed']);
 
-                \Log::warning('M-Pesa payment failed', ['order_id' => $orderId, 'result' => $result]);
+                Log::warning('M-Pesa payment failed', ['order_id' => $orderId, 'result' => $result]);
             }
         } catch (\Exception $e) {
-            \Log::error('M-Pesa callback error: ' . $e->getMessage());
+            Log::error('M-Pesa callback error: ' . $e->getMessage());
         }
 
         return response()->json(['status' => 'received']);
+    }
+
+    public function sendSMS(Request $request)
+    {
+        $response = Http::withHeaders([
+                'Accept' => 'application/json',
+                'apiKey' => env('AT_API_KEY'),
+            ])
+            ->asForm()
+            ->post('https://api.africastalking.com/version1/messaging', [
+                'username' => env('AT_USERNAME'),
+                'to'       => '+254106687003',
+                'message'  => 'Hi from Lanty, your order is being processed.',
+            ]);
+
+        if (!$response->successful()) {
+            return response()->json([
+                'success' => false,
+                'status'  => $response->status(),
+                'error'   => $response->json() ?? $response->body(),
+            ], $response->status());
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $response->json(),
+        ]);
     }
 }
