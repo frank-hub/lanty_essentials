@@ -188,6 +188,7 @@ class CheckoutController extends Controller
 
             // Send confirmation SMS
             $this->sendOrderConfirmationSMS($order, $customer);
+            $this->sendOrderConfirmationAdminSMS($order);
 
             DB::commit();
 
@@ -368,36 +369,65 @@ class CheckoutController extends Controller
         }
     }
 
-    // Send order confirmation sms
-    private function sendOrderConfirmationSMS($order, $customer)
+    // Send order confirmation sms using Blessed Texts API
+    private function sendOrderConfirmationSMS($order , $customer)
     {
-        try {
-            $message = "Thank you for your order {$order->id}. Your order is being processed. Lanty Essentials.";
+        $data = [
+            "api_key"   => 'd33a88b8eefc445b86f8e7c18696b984',
+            "sender_id" => 'Champ_Int',
+            "message"   => "Thank you for your order {$order->id}. Your order is being processed. For more inquries call 0106687003 ",
+            "phone"     => $customer->phone
+        ];
 
-            $response = Http::withHeaders([
-                    'Accept' => 'application/json',
-                    'apiKey' => env('AT_API_KEY'),
-                ])
-                ->asForm()
-                ->post('https://api.africastalking.com/version1/messaging', [
-                    'username' => env('AT_USERNAME'),
-                    'to'       => $customer->phone,
-                    'message'  => $message,
-                ]);
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ])->post('https://sms.blessedtexts.com/api/sms/v1/sendsms', $data);
 
-            if ($response->successful()) {
-                Log::info('Confirmation SMS sent', ['customer_phone' => $customer->phone, 'order_id' => $order->id]);
-            } else {
-                Log::error('SMS sending failed', [
-                    'customer_phone' => $customer->phone,
-                    'order_id' => $order->id,
-                    'status' => $response->status(),
-                    'response' => $response->json() ?? $response->body(),
-                ]);
-            }
-        } catch (\Exception $e) {
-            Log::error('SMS sending error: ' . $e->getMessage());
+        if ($response->successful()) {
+            return response()->json([
+                'status' => 'SMS sent successfully',
+                'response' => $response->json()
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'Failed to send SMS',
+                'error' => $response->body()
+            ]);
+
         }
+
+    }
+
+        public function sendOrderConfirmationAdminSMS($order)
+    {
+        $data = [
+            "api_key"   => 'd33a88b8eefc445b86f8e7c18696b984',
+            "sender_id" => 'Champ_Int',
+            "message"   => "New order received: {$order->id}. Check admin panel for details. https://lantyessentials.co.ke/orders",
+            "phone"     => '254106687003'
+        ];
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ])->post('https://sms.blessedtexts.com/api/sms/v1/sendsms', $data);
+
+        if ($response->successful()) {
+            return response()->json([
+                'status' => 'SMS sent successfully',
+                'response' => $response->json()
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'Failed to send SMS',
+                'error' => $response->body()
+            ]);
+
+        }
+
+
+
     }
 
     /**

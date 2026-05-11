@@ -142,8 +142,8 @@ const LantyCheckoutPage: React.FC = () => {
 
       setOrderCompleted(true);
       setTimeout(() => {
-        router.visit('/products');
-      }, 2000);
+        router.visit('/shop');
+      }, 8000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
       console.error('Checkout error:', err);
@@ -186,7 +186,7 @@ const LantyCheckoutPage: React.FC = () => {
             onClick={() => router.visit('/products')}
             className="w-full bg-[#98a69e] text-white py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors mb-4"
           >
-            Continue Shopping
+            Redirecting To Shop ...
           </button>
 
           <p className="text-xs text-gray-500">
