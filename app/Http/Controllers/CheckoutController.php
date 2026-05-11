@@ -373,8 +373,8 @@ class CheckoutController extends Controller
     private function sendOrderConfirmationSMS($order , $customer)
     {
         $data = [
-            "api_key"   => 'd33a88b8eefc445b86f8e7c18696b984',
-            "sender_id" => 'Champ_Int',
+            "api_key"   => env('BLESSED_TEXTS_API_KEY'),
+            "sender_id" => env('BLESSED_TEXTS_SENDER_ID'),
             "message"   => "Thank you for your order {$order->id}. Your order is being processed. For more inquries call 0106687003 ",
             "phone"     => $customer->phone
         ];
@@ -402,10 +402,10 @@ class CheckoutController extends Controller
         public function sendOrderConfirmationAdminSMS($order)
     {
         $data = [
-            "api_key"   => 'd33a88b8eefc445b86f8e7c18696b984',
-            "sender_id" => 'Champ_Int',
+            "api_key"   => env('BLESSED_TEXTS_API_KEY'),
+            "sender_id" => env('BLESSED_TEXTS_SENDER_ID'),
             "message"   => "New order received: {$order->id}. Check admin panel for details. https://lantyessentials.co.ke/orders",
-            "phone"     => '254106687003'
+            "phone"     => env('BLESSED_TEXTS_ADMIN_PHONE')
         ];
 
         $response = Http::withHeaders([
