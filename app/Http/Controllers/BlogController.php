@@ -12,6 +12,92 @@ use Carbon\Carbon;
 
 class BlogController extends Controller
 {
+
+ // ─────────────────────────────────────────────────────────────────────────
+    // PUBLIC: Blog listing page  →  /blog
+    // ─────────────────────────────────────────────────────────────────────────
+
+    public function publicIndex(Request $request)
+    {
+        $category = $request->query('category');
+        $search   = $request->query('search');
+
+        $query = Blog::published()->orderByDesc('published_at');
+
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title',   'like', "%{$search}%")
+                  ->orWhere('excerpt', 'like', "%{$search}%")
+                  ->orWhere('tags',    'like', "%{$search}%");
+            });
+        }
+
+        $posts = $query->paginate(9)->through(fn($b) => $this->formatPublic($b));
+
+        // Featured post = latest published
+        $featured = Blog::published()
+            ->orderByDesc('published_at')
+            ->first();
+
+        // All categories for filter tabs
+        $categories = Blog::published()
+            ->whereNotNull('category')
+            ->distinct()
+            ->pluck('category');
+
+        return Inertia::render('admin/blog/posts', [
+            'posts'            => $posts,
+            'featured'         => $featured ? $this->formatPublic($featured) : null,
+            'categories'       => $categories,
+            'active_category'  => $category,
+            'search'           => $search,
+        ]);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // PUBLIC: Single post  →  /blog/{slug}
+    // ─────────────────────────────────────────────────────────────────────────
+
+    public function Publicshow(string $slug)
+    {
+        $blog = Blog::where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+
+        // Increment views
+        $blog->increment('views');
+
+        // Related posts (same category, excluding current)
+        $related = Blog::published()
+            ->where('id', '!=', $blog->id)
+            ->where('category', $blog->category)
+            ->orderByDesc('published_at')
+            ->limit(3)
+            ->get()
+            ->map(fn($b) => $this->formatPublic($b));
+
+        // If not enough related, pad with latest
+        if ($related->count() < 3) {
+            $ids    = $related->pluck('id')->push($blog->id);
+            $extras = Blog::published()
+                ->whereNotIn('id', $ids)
+                ->orderByDesc('published_at')
+                ->limit(3 - $related->count())
+                ->get()
+                ->map(fn($b) => $this->formatPublic($b));
+            $related = $related->concat($extras);
+        }
+
+        return Inertia::render('admin/blog/show', [
+            'post'    => $this->formatPublic($blog, true),
+            'related' => $related,
+        ]);
+    }
+
     // ── Admin: list all posts ─────────────────────────────────────────────────
 
     public function index()
@@ -271,6 +357,38 @@ class BlogController extends Controller
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
+
+
+    private function formatPublic(Blog $b, bool $includeContent = false): array
+    {
+        $data = [
+            'id'           => $b->id,
+            'title'        => $b->title,
+            'slug'         => $b->slug,
+            'excerpt'      => $b->excerpt,
+            'cover_image'  => $b->cover_image_url,
+            'category'     => $b->category,
+            'tags'         => $b->tags
+                ? array_map('trim', explode(',', $b->tags))
+                : [],
+            'author'       => $b->author,
+            'views'        => $b->views,
+            'reading_time' => $b->reading_time,
+            'published_at' => $b->published_at
+                ? Carbon::parse($b->published_at)->format('M d, Y')
+                : null,
+            'published_at_raw' => $b->published_at?->toDateString(),
+        ];
+
+        if ($includeContent) {
+            $data['content']         = $b->content;
+            $data['seo_title']       = $b->seo_title;
+            $data['seo_description'] = $b->seo_description;
+        }
+
+        return $data;
+    }
+
 
     private function handleCoverImage(?string $data): ?string
     {

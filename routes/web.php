@@ -12,10 +12,28 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\DashboardController;
 
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
+Route::get('/about', [WelcomeController::class, 'about'])->name('about');
+Route::get('/contact', [WelcomeController::class, 'contact'])->name('contact');
 
+Route::get('/shipping-policy', function () {
+    return Inertia::render('ShippingPolicy');
+})->name('shipping.policy');
+
+Route::get('/return-policy', function () {
+    return Inertia::render('ReturnPolicy');
+})->name('return.policy');
+
+Route::get('/refund-policy', function () {
+    return Inertia::render('RefundPolicy');
+})->name('refund.policy');
+
+Route::get('/privacy-policy', function () {
+    return Inertia::render('PrivacyPolicy');
+})->name('privacy.policy');
 
 
 Route::prefix('cart')->name('cart.')->group(function () {
@@ -65,13 +83,13 @@ Route::prefix('admin/customers')->group(function () {
 
 
 
+Route::get('/public/blog', [BlogController::class, 'publicIndex'])->name('blog.index');
+Route::get('/public/blog/{blog}', [BlogController::class, 'publicShow'])->name('blog.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
 
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::group(['prefix' => 'products'], function () {
         Route::get('/', [ProductsController::class, 'index'])->name('products');
@@ -99,6 +117,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put   ('/blog/{blog}',           [BlogController::class, 'update']      )->name('admin.blog.update');
     Route::delete('/blog/{blog}',           [BlogController::class, 'destroy']     )->name('admin.blog.destroy');
     Route::post  ('/blog/bulk-destroy',     [BlogController::class, 'bulkDestroy'] )->name('admin.blog.bulk-destroy');
+
 
     Route::get('/sales_report',[AnalyticsController::class, 'salesReport'])->name('sales_report');
     Route::get('/product_analytics',[AnalyticsController::class, 'productAnalytics'])->name('product_analytics');

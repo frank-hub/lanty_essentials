@@ -115,4 +115,12 @@ class WelcomeController extends Controller
             'cartItems' => $cartItems
         ]);
     }
+
+    public function about(){
+        return Inertia::render('about');
+    }
+
+    public function contact(){
+        return Inertia::render('contact');
+    }
 }

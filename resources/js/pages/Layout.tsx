@@ -68,7 +68,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 Lanty Home
               </button>
               <button
-                onClick={() => router.visit('/front/blogs')}
+                onClick={() => router.visit('/public/blog')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
                 BLOG
@@ -112,32 +112,37 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div>
               <h4 className="text-lg font-semibold text-gray-900 mb-6">Customer Service</h4>
               <ul className="space-y-4">
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">About Us</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Shipping Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Return Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Refund Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Privacy Policy</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Terms of Conditions</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Payment Method</a></li>
+                <li><a href="/about" className="text-gray-600 hover:text-gray-900">About Us</a></li>
+                <li><a href="/shipping-policy" className="text-gray-600 hover:text-gray-900">Shipping Policy</a></li>
+                <li><a href="/return-policy" className="text-gray-600 hover:text-gray-900">Return Policy</a></li>
+                <li><a href="/refund-policy" className="text-gray-600 hover:text-gray-900">Refund Policy</a></li>
+                <li><a href="/privacy-policy" className="text-gray-600 hover:text-gray-900">Privacy Policy</a></li>
+                <li><a href="/payment-method" className="text-gray-600 hover:text-gray-900">Payment Method</a></li>
               </ul>
             </div>
             <div>
               <h4 className="text-lg font-semibold text-gray-900 mb-6">Shop</h4>
               <ul className="space-y-4">
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">search</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Blogs</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">collections</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-gray-900">Talk to us</a></li>
+                <li><a href="#" className="text-gray-600 hover:text-gray-900">Search</a></li>
+                <li><a href="/public/blog" className="text-gray-600 hover:text-gray-900">Blogs</a></li>
+                <li><a href="#" className="text-gray-600 hover:text-gray-900">Collections</a></li>
+                <li><a href="/contact" className="text-gray-600 hover:text-gray-900">Talk to us</a></li>
               </ul>
             </div>
             <div>
               <h4 className="text-lg font-semibold text-gray-900 mb-6">Get in touch</h4>
               <div className="space-y-4">
                 <p className="text-gray-600">
-                  <span className="font-medium">Contact time:</span> Monday-Friday 9am-5pm EAT
+                  <span className="font-medium">Contact time:</span>
+                  <br />
+                  Monday - Saturday: 9:00 AM - 6:00 PM
+                  <br />
+                  Public Holidays: 11:00 AM - 4:00 PM
+                  <br />
+                  Sunday: Closed
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium">Email:</span> service@lanty.co.ke
+                  <span className="font-medium">Email:</span> support@lantyessentials.co.ke
                 </p>
                 <p className="text-gray-600">
                   <span className="font-medium">Company Address:</span> Nairobi, Kenya

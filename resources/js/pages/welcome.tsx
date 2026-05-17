@@ -346,14 +346,12 @@ const LantyHomepage: React.FC = () => {
 
         <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
           <blockquote className="text-2xl md:text-3xl font-small text-white leading-relaxed mb-8">
-            "We are committed to enhancing women's quality of life by providing high-quality
-            laundry products and feminine hygiene products and information, helping women
-            better manage their menstrual cycles and daily life."
+            {/*Lanty Laundry Statement */}
+            "At Lanty, we believe freshness, comfort, and clean spaces can transform everyday living, bringing confidence, peace, and beauty into every home through simple products designed to make life feel better."
           </blockquote>
           <cite className="text-lg text-white font-small">Lanty</cite>
         </div>
       </section>
-
       {/* Combo Deals Section */}
       <section className="py-16 bg-white">
       <div className="container mx-auto px-4">

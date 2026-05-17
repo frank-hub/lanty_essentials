@@ -41,7 +41,7 @@ const BlogEdit: React.FC = () => {
     setSaving(true);
     setSuccessMsg('');
     try {
-      await axios.put(`/admin/blog/${blog.id}`, {
+      await axios.put(`/blog/${blog.id}`, {
         title:           data.title,
         excerpt:         data.excerpt,
         content:         data.content,

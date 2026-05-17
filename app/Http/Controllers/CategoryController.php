@@ -53,7 +53,7 @@ class CategoryController extends Controller
     }
 
     public function laundry(){
-        $cartItems = $this->getCartIdentifier()['cartItems'];
+        $cartItems = $this->getCartIdentifier()['cartItems'] ?? [];
         $laundryProducts = $this->getLaundryProducts('Laundry Products');
 
         return Inertia::render('category/laundry', [
@@ -63,7 +63,7 @@ class CategoryController extends Controller
     }
 
     public function glass_jar(){
-        $cartItems = $this->getCartIdentifier()['cartItems'];
+        $cartItems = $this->getCartIdentifier()['cartItems'] ?? [];
         $jarProducts = $this->getLaundryProducts('Glass Jars');
 
         return Inertia::render('category/glass_jars', [
@@ -73,7 +73,7 @@ class CategoryController extends Controller
     }
 
     public function home(){
-        $cartItems = $this->getCartIdentifier()['cartItems'];
+        $cartItems = $this->getCartIdentifier()['cartItems'] ?? [];
         $homeProducts = $this->getLaundryProducts('Lanty Home');
 
         return Inertia::render('category/lanty_home', [
@@ -83,7 +83,7 @@ class CategoryController extends Controller
     }
 
     public function washing_machines(){
-        $cartItems = $this->getCartIdentifier()['cartItems'];
+        $cartItems = $this->getCartIdentifier()['cartItems'] ?? [];
         $washingMachineProducts = $this->getLaundryProducts('Washing Machines');
 
         return Inertia::render('category/washing_machine',[
