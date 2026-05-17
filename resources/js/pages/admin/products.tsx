@@ -94,12 +94,15 @@ const LantyProductsPage: React.FC = () => {
   };
 
     const handleEdit = (product: Product) => {
-    router.visit(`/admin/products/${product.id}/edit`);
+    router.visit(`/products/${product.id}/edit`);
     };
 
-    const handleDelete = (productId: number) => {
+    const handleDelete = (productId:string) => {
+        // convert string to number
+        const id = Number(productId);
+
     if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
-        router.delete(`/delete_product/${productId}`, {
+        router.delete(`/delete_product/${id}`, {
         preserveScroll: true,
         onSuccess: () => {
             alert('Product deleted successfully!');
@@ -394,10 +397,6 @@ const LantyProductsPage: React.FC = () => {
                       {/* Actions */}
                       <div className="col-span-1">
                         <div className="flex items-center space-x-2">
-                          <button className="p-1 text-gray-400 hover:text-[#98a69e] transition-colors">
-                            <Eye className="w-4 h-4" />
-                          </button>
-
                           <button  onClick={() => handleEdit(product)}  className="p-1 text-gray-400 hover:text-blue-600 transition-colors">
                             <Edit className="w-4 h-4" />
                           </button>

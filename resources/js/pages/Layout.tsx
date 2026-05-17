@@ -68,10 +68,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 Lanty Home
               </button>
               <button
-                onClick={() => router.visit('/faqs')}
+                onClick={() => router.visit('/front/blogs')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
-                FAQS
+                BLOG
               </button>
               <button
                 onClick={() => router.visit('/contact')}

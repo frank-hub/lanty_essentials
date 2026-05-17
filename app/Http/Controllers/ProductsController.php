@@ -14,17 +14,10 @@ class ProductsController extends Controller
 {
 
     public function index(){
-        // To Do
-        // include : sales: 234
-        // include : status: active/draft
-        // include : image link
-
         return Inertia::render('admin/products', [
-                'products' => Products::with('images')->orderBy('created_at', 'desc')->get(),
-            ]);
+            'products' => Products::with('images')->orderBy('created_at', 'desc')->get(),
+        ]);
     }
-
-
 
     /**
      * Store a newly created product in storage.
@@ -32,58 +25,56 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'name'              => 'required|string|max:255',
+            'description'       => 'nullable|string',
             'short_description' => 'nullable|string|max:500',
-            'sku' => 'required|string|unique:products,sku',
-            'price' => 'required|numeric|min:0',
-            'compare_price' => 'nullable|numeric|min:0',
-            'cost' => 'nullable|numeric|min:0',
-            'category' => 'required',
-            'tags' => 'nullable|string',
-            'stock' => 'nullable|integer|min:0',
-            'track_quantity' => 'boolean',
-            'status' => 'required|in:draft,active,inactive',
-            'visibility' => 'required|in:visible,hidden',
-            'seo_title' => 'nullable|string|max:60',
-            'seo_description' => 'nullable|string|max:160',
-            'specifications' => 'nullable|string',
-            'images' => 'required|array|min:1',
-            'images.*.url' => 'required|string',
+            'sku'               => 'required|string|unique:products,sku',
+            'price'             => 'required|numeric|min:0',
+            'compare_price'     => 'nullable|numeric|min:0',
+            'cost'              => 'nullable|numeric|min:0',
+            'category'          => 'required',
+            'tags'              => 'nullable|string',
+            'stock'             => 'nullable|integer|min:0',
+            'track_quantity'    => 'boolean',
+            'status'            => 'required|in:draft,active,inactive',
+            'visibility'        => 'required|in:visible,hidden',
+            'seo_title'         => 'nullable|string|max:60',
+            'seo_description'   => 'nullable|string|max:160',
+            'specifications'    => 'nullable|string',
+            'images'            => 'required|array|min:1',
+            'images.*.url'      => 'required|string',
             'images.*.is_primary' => 'boolean',
-            'variants' => 'nullable|array',
-            'variants.*.name' => 'required_with:variants|string',
-            'variants.*.price' => 'required_with:variants|numeric|min:0',
-            'variants.*.stock' => 'required_with:variants|integer|min:0',
-            'variants.*.sku' => 'nullable|string',
+            'variants'          => 'nullable|array',
+            'variants.*.name'   => 'required_with:variants|string',
+            'variants.*.price'  => 'required_with:variants|numeric|min:0',
+            'variants.*.stock'  => 'required_with:variants|integer|min:0',
+            'variants.*.sku'    => 'nullable|string',
         ]);
-
 
         try {
             DB::beginTransaction();
 
             $product = Products::create([
-                'name' => $validated['name'],
-                'thumbnail' => $validated['name'],
-                'slug' => Str::slug($validated['name']),
-                'description' => $validated['description'] ?? null,
+                'name'              => $validated['name'],
+                'thumbnail'         => $validated['name'],
+                'slug'              => Str::slug($validated['name']),
+                'description'       => $validated['description'] ?? null,
                 'short_description' => $validated['short_description'] ?? null,
-                'sku' => $validated['sku'],
-                'price' => $validated['price'],
-                'images' => '20',
-                'compare_price' => $validated['compare_price'] ?? null,
-                'cost' => $validated['cost'] ?? null,
-                'category' => $validated['category'] ?? null,
-                'tags' => $validated['tags'] ?? null,
-                'stock' => $validated['stock'] ?? 0,
-                'track_quantity' => $validated['track_quantity'] ?? true,
-                'status' => $validated['status'],
-                'visibility' => $validated['visibility'],
-                'seo_title' => $validated['seo_title'] ?? null,
-                'seo_description' => $validated['seo_description'] ?? null,
-                'specifications' => $validated['specifications'] ?? null,
+                'sku'               => $validated['sku'],
+                'price'             => $validated['price'],
+                'images'            => '20',
+                'compare_price'     => $validated['compare_price'] ?? null,
+                'cost'              => $validated['cost'] ?? null,
+                'category'          => $validated['category'] ?? null,
+                'tags'              => $validated['tags'] ?? null,
+                'stock'             => $validated['stock'] ?? 0,
+                'track_quantity'    => $validated['track_quantity'] ?? true,
+                'status'            => $validated['status'],
+                'visibility'        => $validated['visibility'],
+                'seo_title'         => $validated['seo_title'] ?? null,
+                'seo_description'   => $validated['seo_description'] ?? null,
+                'specifications'    => $validated['specifications'] ?? null,
             ]);
-
 
             foreach ($validated['images'] as $index => $imageData) {
 
@@ -91,22 +82,25 @@ class ProductsController extends Controller
 
                 // Check if it's base64
                 if (strpos($imageData['url'], 'data:image') === 0) {
-                    // Remove "data:image/...;base64," part
                     @list($type, $fileData) = explode(';', $imageData['url']);
-                    @list(, $fileData) = explode(',', $fileData);
+                    @list(, $fileData)      = explode(',', $fileData);
 
                     $fileData = base64_decode($fileData);
 
-                    // Get extension
                     @list(, $extension) = explode('/', $type);
                     $extension = $extension ?: 'png';
 
-                    // Generate unique file name
                     $fileName = 'product_' . $product->id . '_' . time() . '_' . $index . '.' . $extension;
 
-                    // Save to public storage
+                    // AFTER
                     $filePath = 'uploads/products/' . $fileName;
-                    file_put_contents(public_path($filePath), $fileData);
+
+                    $dir = $this->uploadsPath('uploads/products');
+                    if (!is_dir($dir)) {
+                        mkdir($dir, 0755, true);
+                    }
+
+                    file_put_contents($this->uploadsPath($filePath), $fileData);
 
                     $imagePath = $filePath;
                 }
@@ -119,8 +113,6 @@ class ProductsController extends Controller
                 ]);
             }
 
-
-
             DB::commit();
 
             return response()->json([
@@ -129,67 +121,72 @@ class ProductsController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
-            Log::error('Product creation failed: '.$e->getMessage());
+            DB::rollBack();
+            Log::error('Product creation failed: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Failed to create product',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], 500);
         }
-
     }
 
+    public function edit(Products $product)
+    {
+        return Inertia::render('admin/products/EditProduct', [
+            'product' => $product->load('images'),
+        ]);
+    }
 
     public function update(Request $request, $id)
     {
         $product = Products::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'name'              => 'required|string|max:255',
+            'description'       => 'nullable|string',
             'short_description' => 'nullable|string|max:500',
-            'sku' => 'required|string|unique:products,sku,' . $id,
-            'price' => 'required|numeric|min:0',
-            'compare_price' => 'nullable|numeric|min:0',
-            'cost' => 'nullable|numeric|min:0',
-            'category' => 'required',
-            'tags' => 'nullable|string',
-            'stock' => 'nullable|integer|min:0',
-            'track_quantity' => 'boolean',
-            'status' => 'required|in:draft,active,inactive',
-            'visibility' => 'required|in:visible,hidden',
-            'seo_title' => 'nullable|string|max:60',
-            'seo_description' => 'nullable|string|max:160',
-            'specifications' => 'nullable|string',
-            'images' => 'nullable|array',
-            'images.*.url' => 'required_with:images|string',
+            'sku'               => 'required|string|unique:products,sku,' . $id,
+            'price'             => 'required|numeric|min:0',
+            'compare_price'     => 'nullable|numeric|min:0',
+            'cost'              => 'nullable|numeric|min:0',
+            'category'          => 'required',
+            'tags'              => 'nullable|string',
+            'stock'             => 'nullable|integer|min:0',
+            'track_quantity'    => 'boolean',
+            'status'            => 'required|in:draft,active,inactive',
+            'visibility'        => 'required|in:visible,hidden',
+            'seo_title'         => 'nullable|string|max:60',
+            'seo_description'   => 'nullable|string|max:160',
+            'specifications'    => 'nullable|string',
+            'images'            => 'nullable|array',
+            'images.*.url'      => 'required_with:images|string',
             'images.*.is_primary' => 'boolean',
-            'images.*.id' => 'nullable|integer',
-            'deleted_images' => 'nullable|array',
-            'deleted_images.*' => 'integer',
+            'images.*.id'       => 'nullable|integer',
+            'deleted_images'    => 'nullable|array',
+            'deleted_images.*'  => 'integer',
         ]);
 
         try {
             DB::beginTransaction();
 
-            // Update product details
             $product->update([
-                'name' => $validated['name'],
-                'slug' => Str::slug($validated['name']),
-                'description' => $validated['description'] ?? null,
+                'name'              => $validated['name'],
+                'slug'              => Str::slug($validated['name']),
+                'description'       => $validated['description'] ?? null,
                 'short_description' => $validated['short_description'] ?? null,
-                'sku' => $validated['sku'],
-                'price' => $validated['price'],
-                'compare_price' => $validated['compare_price'] ?? null,
-                'cost' => $validated['cost'] ?? null,
-                'category' => $validated['category'] ?? null,
-                'tags' => $validated['tags'] ?? null,
-                'stock' => $validated['stock'] ?? 0,
-                'track_quantity' => $validated['track_quantity'] ?? true,
-                'status' => $validated['status'],
-                'visibility' => $validated['visibility'],
-                'seo_title' => $validated['seo_title'] ?? null,
-                'seo_description' => $validated['seo_description'] ?? null,
-                'specifications' => $validated['specifications'] ?? null,
+                'sku'               => $validated['sku'],
+                'price'             => $validated['price'],
+                'compare_price'     => $validated['compare_price'] ?? null,
+                'cost'              => $validated['cost'] ?? null,
+                'category'          => $validated['category'] ?? null,
+                'tags'              => $validated['tags'] ?? null,
+                'stock'             => $validated['stock'] ?? 0,
+                'track_quantity'    => $validated['track_quantity'] ?? true,
+                'status'            => $validated['status'],
+                'visibility'        => $validated['visibility'],
+                'seo_title'         => $validated['seo_title'] ?? null,
+                'seo_description'   => $validated['seo_description'] ?? null,
+                'specifications'    => $validated['specifications'] ?? null,
             ]);
 
             // Handle deleted images
@@ -199,7 +196,6 @@ class ProductsController extends Controller
                     ->get();
 
                 foreach ($imagesToDelete as $image) {
-                    // Delete physical file
                     $filePath = public_path($image->image_path);
                     if (file_exists($filePath)) {
                         unlink($filePath);
@@ -211,7 +207,8 @@ class ProductsController extends Controller
             // Handle new/updated images
             if (!empty($validated['images'])) {
                 foreach ($validated['images'] as $index => $imageData) {
-                    // If image has an ID, it's an existing image - just update
+
+                    // Existing image — just update sort/primary
                     if (isset($imageData['id'])) {
                         ProductImage::where('id', $imageData['id'])
                             ->where('product_id', $product->id)
@@ -224,10 +221,10 @@ class ProductsController extends Controller
 
                     $imagePath = $imageData['url'];
 
-                    // Check if it's base64 (new image)
+                    // New base64 image
                     if (strpos($imageData['url'], 'data:image') === 0) {
                         @list($type, $fileData) = explode(';', $imageData['url']);
-                        @list(, $fileData) = explode(',', $fileData);
+                        @list(, $fileData)      = explode(',', $fileData);
 
                         $fileData = base64_decode($fileData);
 
@@ -235,8 +232,15 @@ class ProductsController extends Controller
                         $extension = $extension ?: 'png';
 
                         $fileName = 'product_' . $product->id . '_' . time() . '_' . $index . '.' . $extension;
+                        // AFTER
                         $filePath = 'uploads/products/' . $fileName;
-                        file_put_contents(public_path($filePath), $fileData);
+
+                        $dir = $this->uploadsPath('uploads/products');
+                        if (!is_dir($dir)) {
+                            mkdir($dir, 0755, true);
+                        }
+
+                        file_put_contents($this->uploadsPath($filePath), $fileData);
 
                         $imagePath = $filePath;
                     }
@@ -262,9 +266,16 @@ class ProductsController extends Controller
             Log::error('Product update failed: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Failed to update product',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], 500);
         }
+    }
+
+    private function uploadsPath(string $relative): string
+    {
+        // __DIR__ = app/Http/Controllers
+        // go up 3 levels to reach the web root
+        return dirname(__DIR__, 3) . '/' . $relative;
     }
 
     /**
@@ -277,11 +288,8 @@ class ProductsController extends Controller
 
             $product = Products::findOrFail($id);
 
-            // Delete all associated images (physical files and records)
             $images = ProductImage::where('product_id', $product->id)->get();
-
             foreach ($images as $image) {
-                // Delete physical file
                 $filePath = public_path($image->image_path);
                 if (file_exists($filePath)) {
                     unlink($filePath);
@@ -289,7 +297,6 @@ class ProductsController extends Controller
                 $image->delete();
             }
 
-            // Delete the product
             $product->delete();
 
             DB::commit();
@@ -301,7 +308,7 @@ class ProductsController extends Controller
             Log::error('Product deletion failed: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Failed to delete product',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], 500);
         }
     }
@@ -312,7 +319,7 @@ class ProductsController extends Controller
     public function bulkDestroy(Request $request)
     {
         $validated = $request->validate([
-            'ids' => 'required|array',
+            'ids'   => 'required|array',
             'ids.*' => 'integer|exists:products,id',
         ]);
 
@@ -323,9 +330,7 @@ class ProductsController extends Controller
                 $product = Products::find($id);
 
                 if ($product) {
-                    // Delete all associated images
                     $images = ProductImage::where('product_id', $product->id)->get();
-
                     foreach ($images as $image) {
                         $filePath = public_path($image->image_path);
                         if (file_exists($filePath)) {
@@ -333,7 +338,6 @@ class ProductsController extends Controller
                         }
                         $image->delete();
                     }
-
                     $product->delete();
                 }
             }
@@ -349,9 +353,8 @@ class ProductsController extends Controller
             Log::error('Bulk product deletion failed: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Failed to delete products',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], 500);
         }
     }
-
 }

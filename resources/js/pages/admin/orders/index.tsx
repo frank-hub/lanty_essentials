@@ -42,6 +42,7 @@ interface Order {
   details: Array<{
     id: string;
     product_id: string;
+    product_name: string;
     quantity: number;
     price: number;
     sku: string;
@@ -500,6 +501,11 @@ const LantyOrdersDashboard: React.FC = () => {
                                 <p className="text-gray-700">{order.shipping_address}</p>
                               </div>
                             </div>
+                            {/* Total */}
+                            <div className="mt-4 flex items-center space-x-2">
+                              <DollarSign className="w-4 h-4 text-gray-500" />
+                              <span className="text-gray-900 font-semibold">Total: KSh {(order.order_amount || order.amount || 0).toLocaleString()}</span>
+                            </div>
                           </div>
                         </div>
 
@@ -510,7 +516,7 @@ const LantyOrdersDashboard: React.FC = () => {
                             <table className="w-full text-sm">
                               <thead className="bg-gray-100">
                                 <tr>
-                                  <th className="px-4 py-2 text-left text-gray-700">SKU</th>
+                                  <th className="px-4 py-2 text-left text-gray-700">Product</th>
                                   <th className="px-4 py-2 text-left text-gray-700">Quantity</th>
                                   <th className="px-4 py-2 text-right text-gray-700">Price</th>
                                   <th className="px-4 py-2 text-right text-gray-700">Subtotal</th>
@@ -519,7 +525,7 @@ const LantyOrdersDashboard: React.FC = () => {
                               <tbody className="divide-y divide-gray-200">
                                 {order.details.map((item) => (
                                   <tr key={item.id}>
-                                    <td className="px-4 py-2 text-gray-900 font-mono">{item.sku}</td>
+                                    <td className="px-4 py-2 text-gray-900 font-mono">{item.product_name}</td>
                                     <td className="px-4 py-2 text-gray-900">{item.quantity}</td>
                                     <td className="px-4 py-2 text-right text-gray-900">KSh {item.price.toLocaleString()}</td>
                                     <td className="px-4 py-2 text-right text-gray-900 font-semibold">KSh {(item.price * item.quantity).toLocaleString()}</td>

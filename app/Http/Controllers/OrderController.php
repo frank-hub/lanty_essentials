@@ -35,6 +35,7 @@ class OrderController extends Controller
                         return [
                             'id' => $detail->id,
                             'product_id' => $detail->product_id,
+                            'product_name' => $detail->product->name,
                             'quantity' => $detail->quantity,
                             'price' => (float) $detail->price,
                             'sku' => $detail->sku,

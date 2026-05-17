@@ -53,7 +53,6 @@ const LantyAdminDashboard: React.FC = () => {
         { id: 'all-products', label: 'All Products', url: '/products' },
         { id: 'add-product', label: 'Add Product' , url: '/add_product'},
         // { id: 'categories', label: 'Categories', url: '/products' },
-        { id: 'inventory', label: 'Inventory', url: '/inventory' }
       ]
     },
     {
@@ -64,9 +63,6 @@ const LantyAdminDashboard: React.FC = () => {
       badge: '12',
       submenu: [
         { id: 'all-orders', label: 'All Orders' , url: '/orders'},
-        { id: 'pending-orders', label: 'Pending Orders', url: '/orders/pending' },
-        { id: 'completed-orders', label: 'Completed Orders', url: '/orders/completed' },
-        { id: 'refunds', label: 'Refunds' , url: '/orders/refunds'}
       ]
     },
     {
@@ -85,9 +81,9 @@ const LantyAdminDashboard: React.FC = () => {
       icon: BarChart3,
       url: '',
       submenu: [
-        { id: 'sales-report', label: 'Sales Report' , url: '/products'},
-        { id: 'product-analytics', label: 'Product Analytics' , url: '/products'},
-        { id: 'customer-insights', label: 'Customer Insights', url: '/products' }
+        { id: 'sales-report', label: 'Sales Report' , url: '/sales_report'},
+        { id: 'product-analytics', label: 'Product Analytics' , url: '/product_analytics'},
+        { id: 'customer-insights', label: 'Customer Insights', url: '/customer_insights' }
       ]
     },
     {
@@ -96,9 +92,8 @@ const LantyAdminDashboard: React.FC = () => {
       icon: Tag,
       url: '',
       submenu: [
-        { id: 'coupons', label: 'Coupons & Discounts' , url: '/products'},
-        { id: 'email-campaigns', label: 'Email Campaigns' , url: '/products'},
-        { id: 'seo', label: 'SEO Settings', url: '/products' }
+        { id: 'blogs', label: 'Blogs' , url: '/blog'},
+
       ]
     },
     {
