@@ -68,7 +68,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 Lanty Home
               </button>
               <button
-                onClick={() => router.visit('/public/blog')}
+                onClick={() => router.visit('/front/blog')}
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
               >
                 BLOG
@@ -124,7 +124,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <h4 className="text-lg font-semibold text-gray-900 mb-6">Shop</h4>
               <ul className="space-y-4">
                 <li><a href="#" className="text-gray-600 hover:text-gray-900">Search</a></li>
-                <li><a href="/public/blog" className="text-gray-600 hover:text-gray-900">Blogs</a></li>
+                <li><a href="/front/blog" className="text-gray-600 hover:text-gray-900">Blogs</a></li>
                 <li><a href="#" className="text-gray-600 hover:text-gray-900">Collections</a></li>
                 <li><a href="/contact" className="text-gray-600 hover:text-gray-900">Talk to us</a></li>
               </ul>

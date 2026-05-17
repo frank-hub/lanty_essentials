@@ -215,7 +215,7 @@ const BlogIndex: React.FC = () => {
                 </div>
                 <button
                   className="mt-8 inline-flex items-center gap-2 bg-[#98a69e] text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-[#7a8f87] transition-colors"
-                  onClick={(e) => { e.stopPropagation(); router.visit(`/public/blog/${featured.slug}`); }}
+                  onClick={(e) => { e.stopPropagation(); router.visit(`/front/blog/${featured.slug}`); }}
                 >
                   Read Article <ArrowRight className="w-4 h-4" />
                 </button>

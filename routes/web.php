@@ -18,6 +18,8 @@ use App\Http\Controllers\DashboardController;
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 Route::get('/about', [WelcomeController::class, 'about'])->name('about');
 Route::get('/contact', [WelcomeController::class, 'contact'])->name('contact');
+Route::get('/front/blog', [BlogController::class, 'publicIndex'])->name('blog.index');
+Route::get('/front/blog/{blog}', [BlogController::class, 'publicShow'])->name('blog.show');
 
 Route::get('/shipping-policy', function () {
     return Inertia::render('ShippingPolicy');
@@ -83,8 +85,7 @@ Route::prefix('admin/customers')->group(function () {
 
 
 
-Route::get('/public/blog', [BlogController::class, 'publicIndex'])->name('blog.index');
-Route::get('/public/blog/{blog}', [BlogController::class, 'publicShow'])->name('blog.show');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
 

@@ -70,7 +70,7 @@ const BlogShow: React.FC = () => {
 
         {/* Back button */}
         <button
-          onClick={() => router.visit('/public/blog')}
+          onClick={() => router.visit('/front/blog')}
           className="absolute top-6 left-6 flex items-center gap-2 text-white/80 hover:text-white text-sm font-medium transition-colors bg-black/20 hover:bg-black/40 px-3 py-2 rounded-full backdrop-blur-sm"
         >
           <ArrowLeft className="w-4 h-4" /> All Posts
