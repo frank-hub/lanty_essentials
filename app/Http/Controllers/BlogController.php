@@ -404,18 +404,25 @@ class BlogController extends Controller
         $fileName = 'blog_' . time() . '_' . Str::random(8) . '.' . $extension;
         $filePath = 'uploads/blogs/' . $fileName;
 
-        $dir = public_path('uploads/blogs');
+        $dir = $this->uploadsPath('uploads/blogs');
         if (! is_dir($dir)) mkdir($dir, 0755, true);
 
-        file_put_contents(public_path($filePath), $fileData);
+        file_put_contents($this->uploadsPath($filePath), $fileData);
 
         return $filePath;
+    }
+
+    private function uploadsPath(string $relative): string
+    {
+        // __DIR__ = app/Http/Controllers
+        // go up 3 levels to reach the web root
+        return dirname(__DIR__, 3) . '/' . $relative;
     }
 
     private function deleteCoverFile(?string $path): void
     {
         if (! $path) return;
-        $full = public_path($path);
+        $full = $this->uploadsPath($path);
         if (file_exists($full)) unlink($full);
     }
 
