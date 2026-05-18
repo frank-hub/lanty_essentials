@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\CartItem;
 use Illuminate\Support\Facades\Http;
+use App\Models\Blog;
+use Carbon\Carbon;
 
 
 class WelcomeController extends Controller
@@ -94,9 +96,26 @@ class WelcomeController extends Controller
 
         $products = Products::with('images')->orderBy('created_at', 'desc')->get();
 
+
+        $latestPosts = Blog::published()
+        ->orderByDesc('published_at')
+        ->limit(3)
+        ->get()
+        ->map(fn($b) => [
+            'id'           => $b->id,
+            'title'        => $b->title,
+            'slug'         => $b->slug,
+            'excerpt'      => $b->excerpt,
+            'cover_image'  => $b->cover_image_url,
+            'category'     => $b->category,
+            'reading_time' => $b->reading_time,
+            'published_at' => Carbon::parse($b->published_at)->format('M d, Y'),
+        ]);
+
         return Inertia::render('welcome', [
             'products' => $products,
             'cartItems' => $cartItems,
+            'latestPosts' => $latestPosts,
         ]);
     }
 

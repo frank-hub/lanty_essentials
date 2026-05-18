@@ -325,51 +325,6 @@ const LantyProductDetail: React.FC = () => {
         )}
       </main>
 
-      {/* You may also like Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8">You may also like</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {relatedProducts.map((relatedProduct) => (
-            <div key={relatedProduct.id} className="group cursor-pointer">
-              <div className="relative overflow-hidden rounded-lg bg-gray-100 mb-4">
-                <img
-                  src={relatedProduct.image}
-                  alt={relatedProduct.name}
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                {relatedProduct.onSale && (
-                  <span className="absolute top-4 left-4 bg-black text-white px-3 py-1 text-sm font-medium rounded">
-                    Sale
-                  </span>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="font-medium text-gray-900 group-hover:text-[#98a69e] line-clamp-2">
-                  {relatedProduct.name}
-                </h3>
-                <div className="flex items-center space-x-3">
-                  {relatedProduct.originalPrice && (
-                    <span className="text-sm text-gray-500 line-through">
-                      {relatedProduct.originalPrice}
-                    </span>
-                  )}
-                  {relatedProduct.salePrice && (
-                    <span className="font-semibold text-gray-900">
-                      {relatedProduct.salePrice}
-                    </span>
-                  )}
-                  {relatedProduct.fromPrice && (
-                    <span className="font-semibold text-gray-900">
-                      {relatedProduct.fromPrice}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
     </Layout>
   );
 };

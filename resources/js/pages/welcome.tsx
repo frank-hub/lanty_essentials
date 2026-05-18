@@ -23,9 +23,20 @@ interface Product {
   createdAt: string;
   sales: number;
 }
+interface Post {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  cover_image: string | null;
+  category: string | null;
+  reading_time: number;
+  published_at: string;
+}
 
 interface WelcomePageProps {
   products: Product[];
+  latestPosts: Post[];
 }
 
 
@@ -33,6 +44,9 @@ interface WelcomePageProps {
 const LantyHomepage: React.FC = () => {
   const flashSaleProducts: Product[] = usePage<WelcomePageProps>().props.products;
   const [addingToCart, setAddingToCart] = useState<number | null>(null);
+  const latestPosts: Post[] = usePage<WelcomePageProps>().props.latestPosts;
+
+const placeholder = 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400&h=300&fit=crop';
 
     const discountPercentage = (product: Product) => {
     if (!product.compare_price) return 0;
@@ -448,63 +462,59 @@ const LantyHomepage: React.FC = () => {
       </section>
 
       {/* Blog Posts */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-gray-900 mb-12">Blog posts</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <article className="group cursor-pointer">
-              <div className="aspect-w-16 aspect-h-9 mb-4">
-                <img
-                  src="https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400&h=300&fit=crop"
-                  alt="Sustainable Manufacturing"
-                  className="w-full h-64 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-gray-600">
-                Sustainable Manufacturing Practices for Ultra T...
-              </h4>
-              <p className="text-sm text-gray-500 mb-3">MAY 13, 2024</p>
-              <p className="text-gray-700 line-clamp-3">
-                Ultra Thin Pads have become popular choices for many women seeking both comfort and...
-              </p>
-            </article>
+      {/* Blog Posts */}
+<section className="py-16 bg-white">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-between mb-12">
+      <h3 className="text-3xl font-bold text-gray-900">Blog Posts</h3>
+      <button
+        onClick={() => router.visit('/front/blog')}
+        className="text-sm text-[#98a69e] font-medium hover:underline flex items-center gap-1"
+      >
+        View all →
+      </button>
+    </div>
 
-            <article className="group cursor-pointer">
-              <div className="aspect-w-16 aspect-h-9 mb-4">
-                <img
-                  src="https://images.unsplash.com/photo-1594736797933-d0a9ba25c5aa?w=400&h=300&fit=crop"
-                  alt="Menstrual remedies"
-                  className="w-full h-64 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-gray-600">
-                Tips and remedies for alleviating menstrual cra...
-              </h4>
-              <p className="text-sm text-gray-500 mb-3">MAY 5, 2024</p>
-              <p className="text-gray-700 line-clamp-3">
-                Menstrual cramps, scientifically known as dysmenorrhea, are a common experience...
+    {latestPosts && latestPosts.length > 0 ? (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {latestPosts.map((post: Post) => (
+          <article
+            key={post.id}
+            className="group cursor-pointer"
+            onClick={() => router.visit(`/front/blog/${post.slug}`)}
+          >
+            <div className="mb-4 overflow-hidden rounded-lg">
+              <img
+                src={post.cover_image ?? placeholder}
+                alt={post.title}
+                className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            {post.category && (
+              <span className="text-xs font-semibold uppercase tracking-widest text-[#5a7a6e]">
+                {post.category}
+              </span>
+            )}
+            <h4 className="text-xl font-semibold text-gray-900 mb-2 mt-1 group-hover:text-gray-600 line-clamp-2">
+              {post.title}
+            </h4>
+            <p className="text-sm text-gray-500 mb-3 uppercase tracking-wide">
+              {post.published_at}
+            </p>
+            {post.excerpt && (
+              <p className="text-gray-700 line-clamp-3 text-sm leading-relaxed">
+                {post.excerpt}
               </p>
-            </article>
-
-            <article className="group cursor-pointer">
-              <div className="aspect-w-16 aspect-h-9 mb-4">
-                <img
-                  src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop"
-                  alt="Breaking taboos"
-                  className="w-full h-64 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-gray-600">
-                The Importance of Breaking Taboos Around Menstr...
-              </h4>
-              <p className="text-sm text-gray-500 mb-3">APRIL 30, 2024</p>
-              <p className="text-gray-700 line-clamp-3">
-                Introduction Breaking the silence around menstruation is not just about starting...
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
+            )}
+          </article>
+        ))}
+      </div>
+    ) : (
+      // Fallback if no posts published yet
+      <p className="text-gray-400 text-center py-12">No posts published yet.</p>
+    )}
+  </div>
+</section>
     </Layout>
   );
 };

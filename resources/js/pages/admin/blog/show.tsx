@@ -4,6 +4,7 @@ import {
   ArrowLeft, Clock, Eye, Tag, ChevronRight,
   Facebook, Twitter, Link2, Share2,
 } from 'lucide-react';
+import Layout from '@/pages/Layout';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -56,6 +57,7 @@ const BlogShow: React.FC = () => {
   const shareTitle = encodeURIComponent(post.title);
 
   return (
+    <Layout title={post.seo_title ?? post.title} description={post.seo_description ?? post.excerpt ?? undefined}>
     <div className="min-h-screen bg-white">
 
       {/* ── Hero image ── */}
@@ -134,7 +136,7 @@ const BlogShow: React.FC = () => {
             {post.tags.map((tag) => (
               <button
                 key={tag}
-                onClick={() => router.get('/blog', { search: tag })}
+                onClick={() => router.get('/front/blog', { search: tag })}
                 className="text-xs px-3 py-1 bg-gray-100 text-gray-600 rounded-full hover:bg-[#98a69e]/10 hover:text-[#5a7a6e] transition-colors"
               >
                 #{tag}
@@ -200,7 +202,7 @@ const BlogShow: React.FC = () => {
             <div className="flex items-center justify-between mb-10">
               <h2 className="text-2xl font-bold text-gray-900">You might also like</h2>
               <button
-                onClick={() => router.visit('/blog')}
+                onClick={() => router.visit('/front/blog')}
                 className="text-sm text-[#98a69e] flex items-center gap-1 hover:underline"
               >
                 All posts <ChevronRight className="w-4 h-4" />
@@ -212,7 +214,7 @@ const BlogShow: React.FC = () => {
                 <article
                   key={r.id}
                   className="group cursor-pointer bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                  onClick={() => router.visit(`/blog/${r.slug}`)}
+                  onClick={() => router.visit(`/front/blog/${r.slug}`)}
                 >
                   <div className="overflow-hidden">
                     <img
@@ -245,6 +247,7 @@ const BlogShow: React.FC = () => {
       )}
 
     </div>
+        </Layout>
   );
 };
 

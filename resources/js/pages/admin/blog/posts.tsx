@@ -58,7 +58,7 @@ const BlogIndex: React.FC = () => {
     const params: Record<string, string> = {};
     if (cat)               params.category = cat;
     if (q && q.trim())     params.search   = q.trim();
-    router.get('/public/blog', params, { preserveScroll: false });
+    router.get('/front/blog', params, { preserveScroll: false });
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -131,7 +131,7 @@ const BlogIndex: React.FC = () => {
             <div className="text-center py-24">
               <p className="text-gray-400 text-lg">No posts found.</p>
               <button
-                onClick={() => router.visit('/blog')}
+                onClick={() => router.visit('/front/blog')}
                 className="mt-4 text-[#98a69e] font-medium hover:underline"
               >
                 Clear filters
@@ -179,7 +179,7 @@ const BlogIndex: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
             <div
               className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center cursor-pointer group"
-              onClick={() => router.visit(`/blog/${featured.slug}`)}
+              onClick={() => router.visit(`/front/blog/${featured.slug}`)}
             >
               {/* Image */}
               <div className="overflow-hidden rounded-2xl shadow-lg">
@@ -233,7 +233,7 @@ const BlogIndex: React.FC = () => {
 const PostCard: React.FC<{ post: Post }> = ({ post }) => (
   <article
     className="group cursor-pointer flex flex-col"
-    onClick={() => router.visit(`/blog/${post.slug}`)}
+    onClick={() => router.visit(`/front/blog/${post.slug}`)}
   >
     {/* Image */}
     <div className="overflow-hidden rounded-xl mb-5">
